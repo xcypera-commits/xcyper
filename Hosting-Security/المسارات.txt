@@ -1,0 +1,338 @@
+<?php
+define('SECURITY_ACCESS', true);
+$rootPath = dirname(__DIR__, 4); // عدل الرقم حسب عمق مجلدك
+require_once $rootPath . '/security-init.php';
+require_once $rootPath . '/security-functions.php';
+
+?>
+ hosting-system/ (مجلد مشروعك الحالي)
+
+ 📁 project-root/
+│
+├── 📁 config/
+│   └── database.php (موجود)
+│
+├── 📁 includes/
+│   ├── functions.php (موجود)
+│   ├── auth.php (موجود)
+│   ├── client_functions.php (موجود)
+│   │
+│   └── 📁 security/ (جديد - سننشئه)
+│       ├── 📁 config/
+│       │   ├── security-config.php
+│       │   └── encryption-config.php
+│       │
+│       ├── 📁 core/
+│       │   ├── SecurityConstants.php
+│       │   ├── SecurityLogger.php
+│       │   └── SecurityValidator.php
+│       │
+│       ├── 📁 authentication/
+│       │   ├── AuthManager.php
+│       │   ├── SessionManager.php
+│       │   └── MFAManager.php
+│       │
+│       ├── 📁 isolation/ (الأهم - عزل العملاء)
+│       │   ├── ContainerManager.php
+│       │   ├── NetworkIsolator.php
+│       │   └── QuotaManager.php
+│       │
+│       ├── 📁 monitoring/
+│       │   ├── ActivityMonitor.php
+│       │   ├── ThreatDetector.php
+│       │   └── AlertSystem.php
+│       │
+│       ├── 📁 validation/
+│       │   ├── InputValidator.php
+│       │   ├── XSSProtection.php
+│       │   ├── SQLInjectionProtection.php
+│       │   └── FileUploadValidator.php (مهم لرفع الملفات)
+│       │
+│       ├── 📁 backup/
+│       │   ├── BackupManager.php
+│       │   └── RecoveryManager.php
+│       │
+│       └── 📁 middleware/
+│           ├── SecurityMiddleware.php
+│           └── SecurityHeaders.php
+│
+├── 📁 logs/
+│   └── 📁 security/ (جديد)
+│       ├── audit.log
+│       ├── access.log
+│       ├── threat.log
+│       └── uploads.log (سجل الملفات المرفوعة)
+│
+├── 📁 uploads/ (مهم - للملفات المرفوعة)
+│   ├── 📁 temp/
+│   ├── 📁 quarantine/ (الملفات المشبوهة)
+│   └── 📁 clean/ (الملفات الآمنة)
+│
+├── 📁 backups/ (جديد - النسخ الاحتياطي)
+│   └── 📁 clients/
+│
+├── 📁 pages/
+│   ├── 📁 admin/
+│   │   ├── 📁 CloudStorage/
+│   │   ├── 📁 Documentation/
+│   │   ├── 📁 ManagerHostingSecurity/
+│   │   ├── 📁 PenetrationTestingUnit/
+│   │   ├── 📁 SecurityMonitoring/
+│   │   ├── staff_login.php
+│   │   └── security-dashboard.php
+│   │
+│   ├── 📁 HOM/
+│   │
+│   └── 📁 clientHostingSecurity/
+│       ├── login.php (موجود)
+│       ├── dashboard.php
+│       ├── projects.php
+│       ├── upload.php
+│       ├── contracts.php
+│       ├── billing.php
+│       ├── reports.php
+│       ├── security.php
+│       ├── support.php
+│       └── hosting.php (الاستضافة والتخزين السحابي)
+│
+├── 📁 api/
+│   └── 📁 security/ (جديد)
+│       ├── auth.php
+│       ├── upload.php
+│       ├── scan.php
+│       └── backup.php
+│
+├── .htaccess (موجود أو ننشئه)
+├── index.php (موجود)
+│
+└── 📁 hosting/ (جديد - للاستضافة والتخزين)
+    ├── 📁 clients/
+    │   └── [client_id]/
+    │       ├── 📁 www/
+    │       ├── 📁 databases/
+    │       ├── 📁 emails/
+    │       └── 📁 logs/
+    └── 📁 containers/
+
+
+
+
+
+-------------------------
+require_once dirname(__DIR__, 3) . '/security-init.php';
+// أو
+require_once '../../../security-init.php';
+--------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+<?php
+require_once '../security-init.php';
+
+// التحقق من تسجيل الدخول
+if (!isset($_SESSION['user_id'])) {
+    header('Location: /pages/clientHostingSecurity/login.php');
+    exit();
+}
+
+// التحقق من الصلاحيات للصفحة الحالية
+$accessControl = new AccessControl();
+$accessControl->enforceAccess();
+
+// مثال: التحقق من صلاحية محددة
+if (!$accessControl->checkPermission('upload_files')) {
+    die('ليس لديك صلاحية رفع ملفات');
+}
+?>
+
+أكتب صفحة إدارة الأدوار والصلاحيات للمدير؟
+
+أكتب صفحة إعدادات الأمان للمستخدمين؟
+
+
+
+
+
+
+
+    -------------------------------------------------------------
+│
+├── 📁 includes/
+│   └── 📁 security/
+│       ├── 📁 config/
+│       │   ├── security-config.php
+│       │   ├── permissions-config.php
+│       │   └── encryption-config.php
+│       │
+│       ├── 📁 core/
+│       │   ├── SecurityConstants.php
+│       │   ├── SecurityUtils.php
+│       │   ├── SecurityLogger.php
+│       │   └── SecurityValidator.php
+│       │
+│       ├── 📁 authentication/
+│       │   ├── AuthManager.php
+│       │   ├── SessionManager.php
+│       │   ├── TokenManager.php
+│       │   ├── PasswordManager.php
+│       │   ├── MFAManager.php
+│       │   └── SSOManager.php
+│       │
+│       ├── 📁 authorization/
+│       │   ├── RoleManager.php
+│       │   ├── PermissionManager.php
+│       │   ├── AccessControl.php
+│       │   └── PolicyManager.php
+│       │
+│       ├── 📁 encryption/
+│       │   ├── EncryptionService.php
+│       │   ├── HashManager.php
+│       │   ├── KeyManager.php
+│       │   └── DataMasking.php
+│       │
+│       ├── 📁 firewall/
+│       │   ├── FirewallManager.php
+│       │   ├── RateLimiter.php
+│       │   ├── IPFilter.php
+│       │   └── RequestValidator.php
+│       │
+│       ├── 📁 monitoring/
+│       │   ├── ActivityMonitor.php
+│       │   ├── ThreatDetector.php
+│       │   ├── AnomalyDetector.php
+│       │   └── AlertSystem.php
+│       │
+│       ├── 📁 validation/
+│       │   ├── InputValidator.php
+│       │   ├── Sanitizer.php
+│       │   ├── XSSProtection.php
+│       │   ├── SQLInjectionProtection.php
+│       │   └── CSRFProtection.php
+│       │
+│       ├── 📁 audit/
+│       │   ├── AuditTrail.php
+│       │   ├── ComplianceChecker.php
+│       │   └── ReportGenerator.php
+│       │
+│       ├── 📁 backup/
+│       │   ├── BackupManager.php
+│       │   ├── RecoveryManager.php
+│       │   └── IntegrityChecker.php
+│       │
+│       └── 📁 middleware/
+│           ├── SecurityMiddleware.php
+│           ├── CORSMiddleware.php
+│           ├── RateLimitMiddleware.php
+│           └── SecurityHeaders.php
+│
+├── 📁 logs/
+│   └── 📁 security/
+│       ├── audit.log
+│       ├── access.log
+│       ├── threat.log
+│       ├── error.log
+│       └── incident.log
+│
+├── 📁 keys/
+│   ├── 📁 private/
+│   ├── 📁 public/
+│   ├── 📁 certificates/
+│   └── 📁 secrets/
+│
+├── 📁 pages/
+│   └── 📁 security/
+│       ├── login.php
+│       ├── mfa-verification.php
+│       ├── password-reset.php
+│       ├── security-settings.php
+│       ├── audit-logs.php
+│       ├── activity-monitor.php
+│       └── incident-response.php
+│
+├── 📁 api/
+│   └── 📁 security/
+│       ├── auth.php
+│       ├── permissions.php
+│       ├── audit.php
+│       ├── monitoring.php
+│       └── encryption.php
+│
+├── .htaccess
+├── security-headers.php
+├── security-init.php
+├── security-functions.php
+└── index.php (ملفك الرئيسي المعدل)
+
+
+
+
+
+/*
+// تضمين تهيئة الحماية
+require_once __DIR__ . '/security-init.php';
+
+// التحقق من تسجيل الدخول
+if (!isset($_SESSION['user_id'])) {
+    header('Location: /pages/security/login.php');
+    exit();
+}
+
+// عرض الواجهة المناسبة حسب الدور
+switch ($_SESSION['user_role']) {
+    case 'client':
+        require_once __DIR__ . '/pages/client/dashboard.php';
+        break;
+    case 'hosting_security_manager':
+        require_once __DIR__ . '/pages/admin/dashboard.php';
+        break;
+    case 'documentation_analyst':
+        require_once __DIR__ . '/pages/analyst/dashboard.php';
+        break;
+    case 'penetration_tester':
+        require_once __DIR__ . '/pages/tester/dashboard.php';
+        break;
+    case 'cloud_storage_admin':
+        require_once __DIR__ . '/pages/storage/dashboard.php';
+        break;
+    case 'security_monitor':
+        require_once __DIR__ . '/pages/monitor/dashboard.php';
+        break;
+    default:
+        require_once __DIR__ . '/pages/dashboard.php';
+}*/
+
+           <!-- Tailwind CSS محلي -->
+<link rel="stylesheet" href="../../../../../assets/css/tailwind.min.css">
+
+<!-- Font Awesome محلي -->
+<link rel="stylesheet" href="../../../../../assets/css/fontawesome.min.css">
+
+<!-- Chart.js محلي -->
+<script src="../../../../../assets/js/chart.min.js"></script>
+
+
+
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="../assets/css/bootstrap.rtl.min.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    
+    <!-- DataTables -->
+    <link rel="stylesheet" href="../assets/css/adataTables.bootstrap5.min.css">
+    
+    <!-- Chart.js -->
+    <script src="../assets/js/chart.min.js"></script>
+    <!-- Chart.js -->
+    <script src="../assets/js/moment.min.js"></script>
+    <script src="../assets/js/ar.js"></script>
+    

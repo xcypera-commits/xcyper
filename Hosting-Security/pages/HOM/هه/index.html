@@ -1,0 +1,1921 @@
+
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X Cyber - خدمات الاستضافة والحماية للعملاء</title>
+        <!-- منع التخزين المؤقت للصفحة -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --primary-red: #ff3333;
+            --primary-green: #00cc66;
+            --primary-purple: #9933ff;
+            --dark-bg: #0a0a1a;
+            --card-bg: rgba(20, 30, 48, 0.9);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background: var(--dark-bg);
+            color: white;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 102, 204, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 51, 51, 0.1) 0%, transparent 40%);
+        }
+        
+        /* تدرجات الألوان */
+        .gradient-text-blue {
+            background: linear-gradient(135deg, var(--primary-blue), #3399ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gradient-text-red {
+            background: linear-gradient(135deg, var(--primary-red), #ff6666);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gradient-text-green {
+            background: linear-gradient(135deg, var(--primary-green), #66ff99);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gradient-text-purple {
+            background: linear-gradient(135deg, var(--primary-purple), #cc99ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* بطاقات الخدمات */
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 102, 204, 0.2);
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0, 102, 204, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .service-card:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-blue);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 60px rgba(0, 102, 204, 0.2);
+        }
+        
+        /* أزرار التفاعل */
+        .primary-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .primary-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-blue));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .primary-btn:hover::before {
+            opacity: 1;
+        }
+        
+        .primary-btn span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 102, 204, 0.3);
+        }
+        
+        /* الأقسام */
+        .section-padding {
+            padding: 80px 0;
+        }
+        
+        /* تأثيرات التمرير */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* علامات التبويب */
+        .tab-button {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 24px;
+            border-radius: 50px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border-color: transparent;
+        }
+        
+        /* خطوات العمل */
+        .work-step {
+            position: relative;
+            padding-right: 60px;
+        }
+        
+        .work-step::before {
+            content: '';
+            position: absolute;
+            right: 20px;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary-blue), transparent);
+        }
+        
+        .step-number {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* خلفيات الأقسام */
+        .bg-gradient-dark {
+            background: linear-gradient(135deg, rgba(10, 15, 25, 0.9), rgba(20, 25, 40, 0.95));
+        }
+        
+        /* تخصيص التمرير */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0f1a2d;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border-radius: 5px;
+        }
+        
+        /* الأنيميشن */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* البادجات */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-blue {
+            background: rgba(0, 102, 204, 0.2);
+            color: #3399ff;
+            border: 1px solid rgba(0, 102, 204, 0.3);
+        }
+        
+        .badge-red {
+            background: rgba(255, 51, 51, 0.2);
+            color: #ff6666;
+            border: 1px solid rgba(255, 51, 51, 0.3);
+        }
+        
+        .badge-green {
+            background: rgba(0, 204, 102, 0.2);
+            color: #66ff99;
+            border: 1px solid rgba(0, 204, 102, 0.3);
+        }
+        
+        /* خطوط التقسيم */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 102, 204, 0.5), transparent);
+            margin: 40px 0;
+        }
+        
+        /* إضافة جديدة: فورمة طلب الخدمة تظهر من الأعلى */
+        #request {
+            scroll-margin-top: 100px; /* يوفر مسافة من الأعلى */
+        }
+    </style>
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <nav class="fixed w-full bg-dark-bg/90 backdrop-blur-lg z-50 border-b border-primary-blue/20">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <!-- الشعار -->
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <div class="w-12 h-12 bg-gradient-to-br from-primary-blue to-primary-purple rounded-xl flex items-center justify-center">
+                        <i class="fas fa-server text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold gradient-text-blue">X Cyber Hosting</h1>
+                        <p class="text-xs text-gray-400">للعـملاء</p>
+                    </div>
+                </div>
+                
+                <!-- القائمة -->
+                <div class="hidden md:flex items-center space-x-8 space-x-reverse">
+                    <a href="#hero" class="text-gray-300 hover:text-white transition-all duration-300"> الرئيسية</a>
+                    <a href="#system" class="text-gray-300 hover:text-white transition-all duration-300"> النظام</a>
+                    <a href="#services" class="text-gray-300 hover:text-white transition-all duration-300"> الخدمات</a>
+                    <a href="#workflow" class="text-gray-300 hover:text-white transition-all duration-300"> سير العمل</a>
+                    <a href="#pricing" class="text-gray-300 hover:text-white transition-all duration-300"> الأسعار</a>
+                    <a href="#request" class="text-gray-300 hover:text-white transition-all duration-300"> طلب خدمة</a>
+                </div>
+                
+                <!-- أزرار -->
+                <a href="login.html" class="primary-btn">
+                    <span>تسجيل دخول</span>
+                    <i class="fas fa-user mr-2"></i>
+                </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- القسم الرئيسي -->
+    <section id="hero" class="pt-32 pb-20">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- النص الرئيسي -->
+                <div class="fade-in">
+                    <div class="inline-flex items-center space-x-3 space-x-reverse mb-6">
+                        <span class="badge badge-blue">جديد</span>
+                        <span class="text-sm text-gray-400">أكثر من 30 خدمة متخصصة</span>
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                        نظام <span class="gradient-text-blue">الاستضافة</span><br>
+                        و <span class="gradient-text-red">الحماية</span> المتكامل
+                    </h1>
+                    
+                    <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                        بنية تحتية رقمية محكمة تضمن توافر وأمان واستمرارية خدماتك 
+                        مع فريق دعم فني متخصص يعمل على مدار الساعة
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="scrollToServices()" class="primary-btn">
+                            <span>استعرض الخدمات</span>
+                            <i class="fas fa-list mr-2"></i>
+                        </button>
+                        
+                        <button onclick="showDemoModal()" class="px-8 py-4 border-2 border-primary-blue/30 rounded-xl hover:border-primary-blue transition-all duration-300">
+                            <span>شاهد العرض التوضيحي</span>
+                            <i class="fas fa-play ml-2"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- المميزات السريعة -->
+                    <div class="grid grid-cols-3 gap-4 mt-12">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold gradient-text-blue mb-2">99.99%</div>
+                            <div class="text-sm text-gray-400">نسبة التوافر</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold gradient-text-red mb-2">24/7</div>
+                            <div class="text-sm text-gray-400">مراقبة أمنية</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold gradient-text-green mb-2">30+</div>
+                            <div class="text-sm text-gray-400">خدمة متخصصة</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- الصورة المتحركة -->
+                <div class="relative fade-in" style="transition-delay: 0.2s">
+                    <div class="floating">
+                        <div class="w-full h-96 bg-gradient-to-br from-primary-blue/20 to-primary-purple/20 rounded-3xl border border-primary-blue/30 flex items-center justify-center">
+                            <div class="text-center">
+                                <div class="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-primary-blue to-primary-purple rounded-full flex items-center justify-center">
+                                    <i class="fas fa-shield-alt text-4xl"></i>
+                                </div>
+                                <p class="text-primary-blue">نظام الاستضافة والحماية</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- تعريف النظام -->
+    <section id="system" class="section-padding bg-gradient-dark">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    نظام <span class="gradient-text-blue">الاستضافة والحماية</span><br>
+                    <span class="text-2xl text-gray-300">نظرة شاملة</span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    نظام متكامل يجمع بين قوة الاستضافة وأمان الحماية في منصة واحدة
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <!-- تعريف النظام -->
+                <div class="service-card p-8 fade-in">
+                    <div class="w-16 h-16 mb-6 bg-primary-blue/20 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-info-circle text-2xl text-primary-blue"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text-blue">تعريف النظام</h3>
+                    <p class="text-gray-300 mb-6">
+                        نظام الاستضافة والحماية والتخزين السحابي هو منصة بنية تحتية رقمية متكاملة 
+                        تقدم خدمات استضافة المواقع، التخزين السحابي الآمن، وفحوصات الحماية المتقدمة.
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            مركز بيانات افتراضي محكم
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            ضمان توافر 99.99%
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            تطبيق أعلى معايير الأمان
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- الهيكل التنظيمي -->
+                <div class="service-card p-8 fade-in" style="transition-delay: 0.1s">
+                    <div class="w-16 h-16 mb-6 bg-primary-red/20 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-sitemap text-2xl text-primary-red"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text-red">الهيكل التنظيمي</h3>
+                    <p class="text-gray-300 mb-6">
+                        يعمل النظام عبر 4 أقسام متخصصة تحت إشراف رئاسة القسم:
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3 space-x-reverse">
+                            <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-file-alt text-green-400"></i>
+                            </div>
+                            <span class="text-sm">قسم التوثيق والتحليل</span>
+                        </div>
+                        <div class="flex items-center space-x-3 space-x-reverse">
+                            <div class="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-shield-alt text-red-400"></i>
+                            </div>
+                            <span class="text-sm">قسم الفحص الأمني</span>
+                        </div>
+                        <div class="flex items-center space-x-3 space-x-reverse">
+                            <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-cloud-upload-alt text-blue-400"></i>
+                            </div>
+                            <span class="text-sm">قسم التخزين والنشر</span>
+                        </div>
+                        <div class="flex items-center space-x-3 space-x-reverse">
+                            <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-eye text-purple-400"></i>
+                            </div>
+                            <span class="text-sm">قسم الرقابة والحماية</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- المميزات الرئيسية -->
+                <div class="service-card p-8 fade-in" style="transition-delay: 0.2s">
+                    <div class="w-16 h-16 mb-6 bg-primary-green/20 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-star text-2xl text-primary-green"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text-green">المميزات الرئيسية</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-gray-900/50 rounded-xl">
+                            <h4 class="font-bold mb-2">توافر عالي</h4>
+                            <p class="text-sm text-gray-400">ضمان توافر الخدمة بنسبة 99.99% مع SLA مضمون</p>
+                        </div>
+                        <div class="p-4 bg-gray-900/50 rounded-xl">
+                            <h4 class="font-bold mb-2">حماية متقدمة</h4>
+                            <p class="text-sm text-gray-400">طبقات حماية متعددة ضد جميع أنواع الهجمات</p>
+                        </div>
+                        <div class="p-4 bg-gray-900/50 rounded-xl">
+                            <h4 class="font-bold mb-2">دعم فني 24/7</h4>
+                            <p class="text-sm text-gray-400">فريق دعم متخصص يعمل على مدار الساعة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- الخدمات (30+ خدمة) -->
+    <section id="services" class="section-padding">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    خدماتنا <span class="gradient-text-blue">المتخصصة</span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    أكثر من 30 خدمة متخصصة تغطي جميع احتياجاتك الرقمية
+                </p>
+            </div>
+            
+            <!-- علامات التبويب -->
+            <div class="flex flex-wrap gap-4 justify-center mb-12 fade-in">
+                <button class="tab-button active" onclick="changeServiceTab('hosting')">
+                    <i class="fas fa-server mr-2"></i>
+                    خدمات الاستضافة
+                </button>
+                <button class="tab-button" onclick="changeServiceTab('security')">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    خدمات الحماية
+                </button>
+                <button class="tab-button" onclick="changeServiceTab('storage')">
+                    <i class="fas fa-cloud mr-2"></i>
+                    التخزين السحابي
+                </button>
+                <button class="tab-button" onclick="changeServiceTab('additional')">
+                    <i class="fas fa-plus-circle mr-2"></i>
+                    خدمات إضافية
+                </button>
+            </div>
+            
+            <!-- خدمات الاستضافة -->
+            <div id="hosting-tab" class="service-tab fade-in">
+                <div class="text-center mb-8">
+                    <h3 class="text-3xl font-bold mb-4 gradient-text-blue">خدمات الاستضافة (12 خدمة)</h3>
+                    <p class="text-gray-300">حلول استضافة متكاملة لجميع أنواع المواقع والتطبيقات</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- خدمة 1 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-blue/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-globe text-primary-blue"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">استضافة مواقع مشتركة</h4>
+                                <span class="badge badge-blue">الأكثر شيوعاً</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            حل استضافة مثالي للمواقع الشخصية والصغيرة مع موارد مشتركة وأداء ممتاز
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-blue font-bold">من 49 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('استضافة مواقع مشتركة', 'hosting')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 2 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-blue/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-server text-primary-blue"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">استضافة VPS مخصصة</h4>
+                                <span class="badge badge-green">مخصص</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            خوادم افتراضية مخصصة مع موارد مضمونة وتحكم كامل في بيئة الاستضافة
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-blue font-bold">من 199 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('استضافة VPS مخصصة', 'hosting')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 3 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-blue/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fab fa-wordpress text-primary-blue"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">استضافة WordPress</h4>
+                                <span class="badge badge-blue">محسنة</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            استضافة مخصصة لـ WordPress مع أداء مُحسن وأمان متقدم وتحديثات تلقائية
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-blue font-bold">من 99 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('استضافة WordPress', 'hosting')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 4 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-blue/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-shopping-cart text-primary-blue"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">استافة متاجر إلكترونية</h4>
+                                <span class="badge badge-red">تجارة</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            استضافة متخصصة للمتاجر الإلكترونية مع دعم أنظمة الدفع وحماية المعاملات
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-blue font-bold">من 149 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('استضافة متاجر إلكترونية', 'hosting')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 5 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-blue/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fab fa-node-js text-primary-blue"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">استضافة تطبيقات Node.js</h4>
+                                <span class="badge badge-green">تقني</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            بيئة استضافة مخصصة لتطبيقات Node.js مع دعم WebSocket وتطبيقات الوقت الحقيقي
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-blue font-bold">من 299 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('استضافة تطبيقات Node.js', 'hosting')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 6 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-blue/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-database text-primary-blue"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">استضافة قواعد البيانات</h4>
+                                <span class="badge badge-purple">بيانات</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            استضافة مخصصة لقواعد البيانات مع نسخ احتياطي تلقائي وأداء مُحسن للاستعلامات
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-blue font-bold">من 199 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('استضافة قواعد البيانات', 'hosting')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-12">
+                    <button class="primary-btn" onclick="showAllServices('hosting')">
+                        <span>عرض جميع خدمات الاستضافة (12 خدمة)</span>
+                        <i class="fas fa-arrow-left mr-2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- خدمات الحماية -->
+            <div id="security-tab" class="service-tab hidden fade-in">
+                <div class="text-center mb-8">
+                    <h3 class="text-3xl font-bold mb-4 gradient-text-red">خدمات الحماية (10 خدمات)</h3>
+                    <p class="text-gray-300">حلول أمنية متقدمة لحماية مواقعك وتطبيقاتك من التهديدات</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- خدمة 1 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-red/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-shield-alt text-primary-red"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">جدار حماية متقدم (WAF)</h4>
+                                <span class="badge badge-red">أساسي</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            جدار حماية تطبيقات ويب يحمي من الهجمات الشائعة مثل SQL Injection و XSS
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-red font-bold">من 99 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('جدار حماية متقدم', 'security')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 2 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-red/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-bolt text-primary-red"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">حماية من هجمات DDoS</h4>
+                                <span class="badge badge-red">مهم</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            حماية متقدمة من هجمات حجب الخدمة الموزعة مع اكتشاف وتخفيف فوري
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-red font-bold">من 199 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('حماية من هجمات DDoS', 'security')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 3 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-red/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-search text-primary-red"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">فحص الثغرات الأمنية</h4>
+                                <span class="badge badge-red">فحص</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            فحص شامل لاكتشاف الثغرات الأمنية في التطبيقات والشبكات والأنظمة
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-red font-bold">من 499 ريال/فحص</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('فحص الثغرات الأمنية', 'security')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 4 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-red/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-user-secret text-primary-red"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">اختبار اختراق متقدم</h4>
+                                <span class="badge badge-red">متقدم</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            محاكاة هجمات حقيقية لتقييم قوة أنظمتك الأمنية واكتشاف نقاط الضعف
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-red font-bold">من 1,499 ريال/اختبار</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('اختبار اختراق متقدم', 'security')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 5 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-red/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-eye text-primary-red"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">مراقبة الأمان 24/7</h4>
+                                <span class="badge badge-red">مستمر</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            مراقبة مستمرة لأنظمتك مع كشف التهديدات والاستجابة الفورية للحوادث
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-red font-bold">من 299 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('مراقبة الأمان 24/7', 'security')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 6 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-red/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-lock text-primary-red"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">تشفير SSL/TLS</h4>
+                                <span class="badge badge-green">تشفير</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                                شهادات SSL/TSSL لتشفير اتصالات موقعك وحماية بيانات الزوار
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-red font-bold">من 199 ريال/سنة</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('تشفير SSL/TLS', 'security')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-12">
+                    <button class="primary-btn" onclick="showAllServices('security')">
+                        <span>عرض جميع خدمات الحماية (10 خدمات)</span>
+                        <i class="fas fa-arrow-left mr-2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- التخزين السحابي -->
+            <div id="storage-tab" class="service-tab hidden fade-in">
+                <div class="text-center mb-8">
+                    <h3 class="text-3xl font-bold mb-4 gradient-text-green">خدمات التخزين السحابي (8 خدمات)</h3>
+                    <p class="text-gray-300">حلول تخزين آمنة وموثوقة لجميع أنواع البيانات والملفات</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- خدمة 1 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-green/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-cloud text-primary-green"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">تخزين سحابي مشفر</h4>
+                                <span class="badge badge-green">أساسي</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            مساحات تخزين سحابية مشفرة بنهاية إلى نهاية مع وصول آمن من أي مكان
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-green font-bold">من 49 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('تخزين سحابي مشفر', 'storage')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 2 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-green/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-save text-primary-green"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">نسخ احتياطي تلقائي</h4>
+                                <span class="badge badge-green">مهم</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            نسخ احتياطي تلقائي لبياناتك مع إمكانية الاستعادة الفورية عند الحاجة
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-green font-bold">من 99 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('نسخ احتياطي تلقائي', 'storage')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 3 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-green/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-share-alt text-primary-green"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">مشاركة ملفات آمنة</h4>
+                                <span class="badge badge-green">مشاركة</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            مشاركة ملفات آمنة مع تحكم كامل في الصلاحيات ومدة الوصول والصلاحيات
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-green font-bold">من 29 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('مشاركة ملفات آمنة', 'storage')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 4 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-green/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-sync-alt text-primary-green"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">تزامن عبر الأجهزة</h4>
+                                <span class="badge badge-green">تزامن</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            تزامن تلقائي لملفاتك عبر جميع أجهزتك مع حفظ أحدث نسخة دائماً
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-green font-bold">من 39 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('تزامن عبر الأجهزة', 'storage')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 5 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-green/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-undo text-primary-green"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">استعادة البيانات السريعة</h4>
+                                <span class="badge badge-green">استعادة</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            استعادة سريعة للبيانات المحذوفة أو التالفة من النسخ الاحتياطية
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-green font-bold">من 149 ريال/استعادة</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('استعادة البيانات السريعة', 'storage')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 6 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-green/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-archive text-primary-green"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">تخزين الأرشيف الطويل</h4>
+                                <span class="badge badge-green">أرشيف</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            تخزين اقتصادي للبيانات الأرشيفية مع إمكانية الوصول عند الحاجة
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-green font-bold">من 9 ريال/GB/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('تخزين الأرشيف الطويل', 'storage')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-12">
+                    <button class="primary-btn" onclick="showAllServices('storage')">
+                        <span>عرض جميع خدمات التخزين (8 خدمات)</span>
+                        <i class="fas fa-arrow-left mr-2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- خدمات إضافية -->
+            <div id="additional-tab" class="service-tab hidden fade-in">
+                <div class="text-center mb-8">
+                    <h3 class="text-3xl font-bold mb-4 gradient-text-purple">خدمات إضافية (8 خدمات)</h3>
+                    <p class="text-gray-300">خدمات داعمة ومكملة لتحسين أداء وأمان أنظمتك</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- خدمة 1 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-purple/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-tachometer-alt text-primary-purple"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">CDN وتسريع المحتوى</h4>
+                                <span class="badge badge-purple">أداء</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            شبكة تسليم محتوى عالمية لتسريع تحميل موقعك وتحسين تجربة المستخدم
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-purple font-bold">من 99 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('CDN وتسريع المحتوى', 'additional')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 2 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-purple/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-balance-scale text-primary-purple"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">موازنة الحمل</h4>
+                                <span class="badge badge-purple">موازنة</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            توزيع الحمل على عدة خواد لضمان التوافر العالي والأداء الممتاز
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-purple font-bold">من 299 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('موازنة الحمل', 'additional')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 3 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-purple/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-chart-line text-primary-purple"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">تحليل الأداء</h4>
+                                <span class="badge badge-purple">تحليل</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            مراقبة وتحليل أداء تطبيقاتك مع تقارير مفصلة وتوصيات للتحسين
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-purple font-bold">من 149 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('تحليل الأداء', 'additional')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 4 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-purple/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-code text-primary-purple"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">واجهات برمجة API</h4>
+                                <span class="badge badge-purple">API</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            واجهات برمجة متقدمة للتحكم في خدماتك برمجياً وأتمتة العمليات
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-purple font-bold">من 499 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('واجهات برمجة API', 'additional')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 5 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-purple/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-mobile-alt text-primary-purple"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">تطبيق إدارة جوال</h4>
+                                <span class="badge badge-purple">جوال</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            تطبيق جوال لإدارة خدماتك ومراقبة أدائها من أي مكان وفي أي وقت
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-purple font-bold">مجاني</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('تطبيق إدارة جوال', 'additional')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- خدمة 6 -->
+                    <div class="service-card p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary-purple/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-headset text-primary-purple"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">دعم فني متميز</h4>
+                                <span class="badge badge-purple">دعم</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            دعم فني متميز مع وقت استجابة أسرع وأولوية في معالجة طلباتك
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary-purple font-bold">من 199 ريال/شهر</span>
+                            <button class="primary-btn text-sm px-4 py-2" onclick="showServiceDetails('دعم فني متميز', 'additional')">
+                                <span>تفاصيل الخدمة</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-12">
+                    <button class="primary-btn" onclick="showAllServices('additional')">
+                        <span>عرض جميع الخدمات الإضافية (8 خدمات)</span>
+                        <i class="fas fa-arrow-left mr-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- خط التقسيم -->
+    <div class="divider container mx-auto px-6"></div>
+
+    <!-- سير العمل -->
+    <section id="workflow" class="section-padding">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    كيف <span class="gradient-text-blue">نعمل</span>؟
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    عملية محكمة من طلب الخدمة حتى التسليم تضمن الجودة والكفاءة
+                </p>
+            </div>
+            
+            <div class="service-card p-8 fade-in">
+                <div class="work-step mb-12">
+                    <div class="step-number">1</div>
+                    <div class="ml-12">
+                        <h3 class="text-2xl font-bold mb-4 gradient-text-blue">تقديم الطلب</h3>
+                        <p class="text-gray-300 mb-6">
+                            تقدم طلب الخدمة عبر موقعنا → يذهب الطلب إلى إدارة المشاريع → ثم إلى رئاسة قسم الاستضافة
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="badge badge-blue">مدة: 1-2 ساعة</span>
+                            <span class="badge badge-green">المسؤول: إدارة المشاريع</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="work-step mb-12">
+                    <div class="step-number">2</div>
+                    <div class="ml-12">
+                        <h3 class="text-2xl font-bold mb-4 gradient-text-green">التحليل والتوثيق</h3>
+                        <p class="text-gray-300 mb-6">
+                            قسم التوثيق يجري دراسة أولية → يعد تقرير التحليل → يرسل إلى إدارة المشاريع لإعداد العقد
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="badge badge-blue">مدة: 1-2 يوم عمل</span>
+                            <span class="badge badge-green">المسؤول: قسم التوثيق</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="work-step mb-12">
+                    <div class="step-number">3</div>
+                    <div class="ml-12">
+                        <h3 class="text-2xl font-bold mb-4 gradient-text-red">الفحص الأمني</h3>
+                        <p class="text-gray-300 mb-6">
+                            بعد موافقتك وتسديد الرسوم → قسم الفحص يجري فحصاً أمنياً شاملاً → معالجة الثغرات إن وجدت
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="badge badge-blue">مدة: 2-3 أيام عمل</span>
+                            <span class="badge badge-red">المسؤول: قسم الفحص الأمني</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="work-step">
+                    <div class="step-number">4</div>
+                    <div class="ml-12">
+                        <h3 class="text-2xl font-bold mb-4 gradient-text-purple">النشر والمراقبة</h3>
+                        <p class="text-gray-300 mb-6">
+                            قسم التخزين ينشر الموقع على الخوادم → قسم الرقابة يراقب الموقع 24/7 → تقارير دورية لك
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="badge badge-blue">مدة: 1 يوم عمل + مستمر</span>
+                            <span class="badge badge-purple">المسؤول: قسم الرقابة</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- مخطط سير العمل -->
+            <div class="mt-16 fade-in" style="transition-delay: 0.2s">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-bold mb-4 gradient-text-blue">مخطط سير العمل البصري</h3>
+                </div>
+                
+                <div class="flex flex-wrap justify-center items-center gap-8">
+                    <div class="text-center">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-primary-blue/20 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-file-upload text-2xl text-primary-blue"></i>
+                        </div>
+                        <p class="font-bold">طلب العميل</p>
+                    </div>
+                    
+                    <div class="text-gray-500">
+                        <i class="fas fa-arrow-left text-2xl"></i>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-green-500/20 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-search text-2xl text-green-500"></i>
+                        </div>
+                        <p class="font-bold">التحليل الأولي</p>
+                    </div>
+                    
+                    <div class="text-gray-500">
+                        <i class="fas fa-arrow-left text-2xl"></i>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-yellow-500/20 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-file-contract text-2xl text-yellow-500"></i>
+                        </div>
+                        <p class="font-bold">العقد والموافقة</p>
+                    </div>
+                    
+                    <div class="text-gray-500">
+                        <i class="fas fa-arrow-left text-2xl"></i>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-red-500/20 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-2xl text-red-500"></i>
+                        </div>
+                        <p class="font-bold">الفحص الأمني</p>
+                    </div>
+                    
+                    <div class="text-gray-500">
+                        <i class="fas fa-arrow-left text-2xl"></i>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-purple-500/20 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-cloud-upload-alt text-2xl text-purple-500"></i>
+                        </div>
+                        <p class="font-bold">النشر والتسليم</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- خط التقسيم -->
+    <div class="divider container mx-auto px-6"></div>
+
+    <!-- نموذج طلب الخدمة -->
+    <section id="request" class="section-padding">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    اطلب <span class="gradient-text-blue">خدمتك</span> الآن
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                املأ النموذج وسنتصل بك خلال 24 ساعة لعرض التفاصيل والبدء في تنفيذ طلبك
+                </p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto fade-in" style="transition-delay: 0.2s">
+                <div class="service-card p-8">
+
+                    <form id="serviceRequestForm" class="space-y-6">
+    <div class="grid md:grid-cols-2 gap-6">
+        <div>
+            <label class="block mb-2 text-gray-300">الاسم الكامل *</label>
+            <input type="text" id="fullName" required class="w-full bg-gray-900/50 border border-gray-700 rounded-xl p-4 focus:outline-none focus:border-primary-blue">
+        </div>
+        <div>
+            <label class="block mb-2 text-gray-300">البريد الإلكتروني *</label>
+            <input type="email" id="email" required class="w-full bg-gray-900/50 border border-gray-700 rounded-xl p-4 focus:outline-none focus:border-primary-blue">
+        </div>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-6">
+        <div>
+            <label class="block mb-2 text-gray-300">رقم الهاتف *</label>
+            <input type="tel" id="phone" required class="w-full bg-gray-900/50 border border-gray-700 rounded-xl p-4 focus:outline-none focus:border-primary-blue">
+        </div>
+        <div>
+            <label class="block mb-2 text-gray-300">اسم المؤسسة</label>
+            <input type="text" id="companyName" class="w-full bg-gray-900/50 border border-gray-700 rounded-xl p-4 focus:outline-none focus:border-primary-blue">
+        </div>
+    </div>
+    
+    <div>
+        <label class="block mb-2 text-gray-300">نوع الخدمة المطلوبة *</label>
+        <select id="serviceType" required class="w-full bg-gray-900/50 border border-gray-700 rounded-xl p-4 focus:outline-none focus:border-primary-blue">
+            <option value="">اختر نوع الخدمة</option>
+            <optgroup label="خدمات الاستضافة">
+                <option value="shared">استضافة مواقع مشتركة</option>
+                <option value="vps">استضافة VPS مخصصة</option>
+                <option value="wordpress">استضافة WordPress</option>
+                <option value="ecommerce">استضافة متاجر إلكترونية</option>
+            </optgroup>
+            <optgroup label="خدمات الحماية">
+                <option value="waf">جدار حماية متقدم</option>
+                <option value="ddos">حماية من هجمات DDoS</option>
+                <option value="scanning">فحص الثغرات الأمنية</option>
+                <option value="pentest">اختبار اختراق متقدم</option>
+            </optgroup>
+            <optgroup label="التخزين السحابي">
+                <option value="storage">تخزين سحابي مشفر</option>
+                <option value="backup">نسخ احتياطي تلقائي</option>
+                <option value="sharing">مشاركة ملفات آمنة</option>
+            </optgroup>
+        </select>
+    </div>
+    
+    <div>
+        <label class="block mb-2 text-gray-300">تفاصيل الطلب *</label>
+        <textarea id="details" required rows="5" class="w-full bg-gray-900/50 border border-gray-700 rounded-xl p-4 focus:outline-none focus:border-primary-blue" placeholder="صف لنا متطلباتك وماذا تحتاج بالضبط..."></textarea>
+    </div>
+    
+    <div class="flex items-center">
+        <input type="checkbox" id="terms" required class="w-5 h-5 ml-3">
+        <label for="terms" class="text-gray-300 text-sm">
+            أوافق على <a href="#" class="text-primary-blue hover:underline">الشروط والأحكام</a> و 
+            <a href="#" class="text-primary-blue hover:underline">سياسة الخصوصية</a>
+        </label>
+    </div>
+    
+    <div id="formMessage" class="hidden p-4 rounded-lg text-center"></div>
+    
+    <button type="submit" id="submitBtn" class="primary-btn w-full text-lg py-4">
+        <span>إرسال طلب الخدمة</span>
+        <i class="fas fa-paper-plane mr-2"></i>
+    </button>
+</form>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- الفوتر -->
+    <footer class="pt-12 pb-6 border-t border-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-3 space-x-reverse mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-primary-blue to-primary-purple rounded-xl"></div>
+                        <div>
+                            <h3 class="text-xl font-bold gradient-text-blue">X Cyber Hosting</h3>
+                            <p class="text-sm text-gray-400">للعملاء</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        نظام الاستضافة والحماية المتكامل<br>
+                        مع أكثر من 30 خدمة متخصصة
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-6 gradient-text-blue">روابط سريعة</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#hero" class="text-gray-400 hover:text-white">🏠 الرئيسية</a></li>
+                        <li><a href="#system" class="text-gray-400 hover:text-white">📋 النظام</a></li>
+                        <li><a href="#services" class="text-gray-400 hover:text-white">⚡ الخدمات</a></li>
+                        <li><a href="#workflow" class="text-gray-400 hover:text-white">🔄 سير العمل</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-6 gradient-text-blue">خدمات شائعة</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white">🌐 استضافة مواقع</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">🛡️ جدار حماية</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">☁️ تخزين سحابي</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">🔍 فحص أمني</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-6 gradient-text-blue">التواصل</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3 space-x-reverse">
+                            <i class="fas fa-phone text-primary-blue"></i>
+                            <span class="text-gray-400">+966 12 345 6789</span>
+                        </div>
+                        <div class="flex items-center space-x-3 space-x-reverse">
+                            <i class="fas fa-envelope text-primary-blue"></i>
+                            <span class="text-gray-400">hosting@xcyber.com</span>
+                        </div>
+                        <div class="flex items-center space-x-3 space-x-reverse">
+                            <i class="fas fa-clock text-primary-blue"></i>
+                            <span class="text-gray-400">الأحد - الخميس: 8 ص - 5 م</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-800 text-center">
+                <p class="text-gray-500">
+                    © 2024 X Cyber Hosting System. جميع الحقوق محفوظة | 
+                    <span class="text-primary-blue">توافر 99.99% مضمون</span>
+                </p>
+                <div class="mt-4 flex justify-center space-x-6 space-x-reverse text-sm text-gray-500">
+                    <a href="#" class="hover:text-primary-blue">الشروط والأحكام</a>
+                    <a href="#" class="hover:text-primary-blue">سياسة الخصوصية</a>
+                    <a href="#" class="hover:text-primary-blue">سياسة الاستخدام</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- نافذة عرض تفاصيل الخدمة -->
+    <div id="serviceModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="service-card max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-8">
+                <!-- سيتم ملء المحتوى ديناميكياً -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // التمرير السلس مع تعديل لطلبات الخدمة
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                // إضافة مسافة من الأعلى (scroll-margin-top)
+                const yOffset = -100;
+                const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                
+                window.scrollTo({
+                    top: y,
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToRequest() {
+            scrollToSection('request');
+        }
+        
+        function scrollToServices() {
+            scrollToSection('services');
+        }
+
+        // =====================================================
+// التحقق من حالة تسجيل الدخول
+// =====================================================
+
+// عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    updateLoginButton();
+});
+
+// تحديث زر تسجيل الدخول حسب حالة المستخدم
+function updateLoginButton() {
+    const loginBtn = document.querySelector('.primary-btn');
+    const isLoggedIn = sessionStorage.getItem('visitor_logged_in') === 'true';
+    const visitorName = sessionStorage.getItem('visitor_name');
+    
+    if (loginBtn) {
+        if (isLoggedIn && visitorName) {
+            // مستخدم مسجل الدخول
+            loginBtn.innerHTML = `
+                <span>${visitorName}</span>
+                <i class="fas fa-user-circle mr-2"></i>
+            `;
+        } else {
+            // زائر
+            loginBtn.innerHTML = `
+                <span>تسجيل دخول</span>
+                <i class="fas fa-user mr-2"></i>
+            `;
+        }
+    }
+}
+
+// تسجيل الخروج
+function logout() {
+    sessionStorage.clear();
+    localStorage.removeItem('visitor_email');
+    window.location.href = 'index.html';
+}
+        
+        // تغيير علامات التبويب للخدمات
+        function changeServiceTab(tabName) {
+            // إخفاء جميع التبويبات
+            document.querySelectorAll('.service-tab').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // إزالة النشاط من جميع الأزرار
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // إظهار التبويب المطلوب
+            document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+            
+            // تفعيل الزر المطلوب
+            event.target.classList.add('active');
+        }
+        
+        // عرض تفاصيل الخدمة
+        function showServiceDetails(serviceName, category) {
+            const modal = document.getElementById('serviceModal');
+            const modalContent = modal.querySelector('.p-8');
+            
+            // بيانات الخدمات
+            const servicesData = {
+                'استضافة مواقع مشتركة': {
+                    category: 'hosting',
+                    description: 'حل استضافة مثالي للمواقع الشخصية والصغيرة مع موارد مشتركة وأداء ممتاز. مثالي للمواقع التي تبدأ رحلتها الرقمية.',
+                    features: [
+                        'مساحة تخزين: 10GB SSD',
+                        'نقل بيانات: 100GB/شهر',
+                        'قواعد بيانات: 5 قواعد',
+                        'بريد إلكتروني: 10 حسابات',
+                        'دعم: PHP, MySQL',
+                        'نسخ احتياطي: أسبوعي'
+                    ],
+                    price: '49 ريال/شهر',
+                    setupTime: '24 ساعة',
+                    sla: '99.9%'
+                },
+                'استضافة VPS مخصصة': {
+                    category: 'hosting',
+                    description: 'خوادم افتراضية مخصصة مع موارد مضمونة وتحكم كامل في بيئة الاستضافة. مثالي للتطبيقات التي تحتاج موارد مخصصة.',
+                    features: [
+                        'معالج: 2 Core vCPU',
+                        'ذاكرة: 4GB RAM',
+                        'تخزين: 80GB SSD',
+                        'نطاق: 4TB/شهر',
+                        'نظام: اختيار أي نظام',
+                        'جذر: تحكم كامل (Root)'
+                    ],
+                    price: '199 ريال/شهر',
+                    setupTime: '4 ساعات',
+                    sla: '99.99%'
+                },
+                'استضافة WordPress': {
+                    category: 'hosting',
+                    description: 'استضافة مخصصة لـ WordPress مع أداء مُحسن وأمان متقدم وتحديثات تلقائية. مثالي للمدونين والمواقع الإعلامية.',
+                    features: [
+                        'مخبأ متقدم لـ WordPress',
+                        'تحديثات تلقائية',
+                        'نسخ احتياطي يومي',
+                        'تثبيت بنقرة واحدة',
+                        'قوالب وإضافات مجانية',
+                        'تحسين للأداء'
+                    ],
+                    price: '99 ريال/شهر',
+                    setupTime: '2 ساعة',
+                    sla: '99.95%'
+                },
+                'جدار حماية متقدم': {
+                    category: 'security',
+                    description: 'جدار حماية تطبيقات ويب متقدم يحمي من الهجمات الشائعة مثل SQL Injection و XSS و CSRF.',
+                    features: [
+                        'حماية من SQL Injection',
+                        'حماية من XSS Attacks',
+                        'حماية من CSRF Attacks',
+                        'قوالب حماية مخصصة',
+                        'سجلات تفصيلية',
+                        'تقارير شهرية'
+                    ],
+                    price: '99 ريال/شهر',
+                    setupTime: '6 ساعات',
+                    sla: '100%'
+                }
+            };
+            
+            const service = servicesData[serviceName] || {
+                category: category,
+                description: 'خدمة متخصصة توفر حلولاً متقدمة مع أعلى معايير الجودة والأمان.',
+                features: [
+                    'أداء عالي ومضمون',
+                    'أمان متعدد الطبقات',
+                    'دعم فني 24/7',
+                    'نسخ احتياطي تلقائي',
+                    'مراقبة مستمرة',
+                    'تقارير مفصلة'
+                ],
+                price: 'اتصل للاستعلام',
+                setupTime: '2-3 أيام عمل',
+                sla: '99.99%'
+            };
+            
+            // إنشاء محتوى النافذة
+            modalContent.innerHTML = `
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h3 class="text-3xl font-bold mb-2 gradient-text-${service.category}">${serviceName}</h3>
+                        <p class="text-gray-400">${service.description}</p>
+                    </div>
+                    <button onclick="closeServiceModal()" class="text-gray-400 hover:text-white text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-xl font-bold mb-4 gradient-text-blue">المميزات</h4>
+                        <div class="space-y-3">
+                            ${service.features.map(feature => `
+                                <div class="flex items-center p-3 bg-gray-900/50 rounded-lg">
+                                    <i class="fas fa-check text-green-400 ml-3"></i>
+                                    <span>${feature}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-xl font-bold mb-4 gradient-text-blue">تفاصيل الخدمة</h4>
+                        <div class="space-y-6">
+                            <div class="p-4 bg-gray-900/50 rounded-xl">
+                                <p class="text-gray-400 text-sm">السعر</p>
+                                <p class="text-2xl font-bold gradient-text-${service.category}">${service.price}</p>
+                            </div>
+                            
+                            <div class="p-4 bg-gray-900/50 rounded-xl">
+                                <p class="text-gray-400 text-sm">مدة التنفيذ</p>
+                                <p class="text-xl font-bold">${service.setupTime}</p>
+                            </div>
+                            
+                            <div class="p-4 bg-gray-900/50 rounded-xl">
+                                <p class="text-gray-400 text-sm">ضمان التوافر</p>
+                                <p class="text-xl font-bold gradient-text-green">${service.sla}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 pt-8 border-t border-gray-800">
+                    <h4 class="text-xl font-bold mb-4 gradient-text-blue">سير العمل</h4>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-primary-blue/20 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-file-signature text-primary-blue"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm">طلب الخدمة</p>
+                                <p class="text-xs text-gray-400">ملء النموذج</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <i class="fas fa-arrow-left text-gray-500 mx-2"></i>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-search text-green-500"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm">التحليل</p>
+                                <p class="text-xs text-gray-400">دراسة أولية</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <i class="fas fa-arrow-left text-gray-500 mx-2"></i>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-file-contract text-yellow-500"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm">العقد</p>
+                                <p class="text-xs text-gray-400">التوقيع والدفع</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <i class="fas fa-arrow-left text-gray-500 mx-2"></i>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-shield-alt text-red-500"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm">التنفيذ</p>
+                                <p class="text-xs text-gray-400">فحص وتنفيذ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 flex justify-end space-x-4 space-x-reverse">
+                    <button onclick="closeServiceModal()" class="px-6 py-3 bg-gray-700 rounded-lg hover:bg-gray-600">
+                        إغلاق
+                    </button>
+                    <button onclick="requestThisService('${serviceName}')" class="px-6 py-3 primary-btn">
+                        <span>طلب هذه الخدمة</span>
+                        <i class="fas fa-shopping-cart mr-2"></i>
+                    </button>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        
+        // إغلاق نافذة الخدمة
+        function closeServiceModal() {
+            const modal = document.getElementById('serviceModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        
+        // طلب خدمة معينة
+        function requestThisService(serviceName) {
+            closeServiceModal();
+            scrollToSection('request');
+            
+            // ملء حقل نوع الخدمة في النموذج
+            const serviceSelect = document.querySelector('select');
+            if (serviceSelect) {
+                serviceSelect.value = serviceName.toLowerCase().replace(/\s+/g, '_');
+            }
+        }
+        
+        // عرض جميع خدمات فئة معينة
+        function showAllServices(category) {
+            const categoryNames = {
+                'hosting': 'الاستضافة',
+                'security': 'الحماية',
+                'storage': 'التخزين السحابي',
+                'additional': 'الإضافية'
+            };
+            
+            const modal = document.getElementById('serviceModal');
+            const modalContent = modal.querySelector('.p-8');
+            
+            modalContent.innerHTML = `
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h3 class="text-3xl font-bold mb-2 gradient-text-${category}">جميع خدمات ${categoryNames[category]}</h3>
+                        <p class="text-gray-400">قائمة كاملة بجميع الخدمات المتاحة في هذه الفئة</p>
+                    </div>
+                    <button onclick="closeServiceModal()" class="text-gray-400 hover:text-white text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    ${generateAllServicesList(category)}
+                </div>
+                
+                <div class="mt-8 pt-8 border-t border-gray-800 text-center">
+                    <button onclick="closeServiceModal()" class="px-8 py-3 bg-gray-700 rounded-lg hover:bg-gray-600">
+                        إغلاق القائمة
+                    </button>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        
+        // توليد قائمة جميع الخدمات
+        function generateAllServicesList(category) {
+            const services = {
+                'hosting': [
+                    'استضافة مواقع مشتركة', 'استضافة VPS مخصصة', 'استضافة سحابية قابلة للتوسع',
+                    'استافة WordPress مُحسنة', 'استضافة تطبيقات Node.js', 'استضافة متاجر إلكترونية',
+                    'استضافة خوادم مخصصة', 'استضافة تطبيقات Java', 'استضافة قواعد البيانات',
+                    'استافة مواقع إعلامية', 'استضافة تطبيقات Python', 'استضافة ألعاب'
+                ],
+                'security': [
+                    'جدار حماية متقدم (WAF)', 'حماية من هجمات DDoS', 'فحص الثغرات الأمنية',
+                    'اختبار اختراق متقدم', 'مراقبة الأمان 24/7', 'كشف التسلل والتهديدات',
+                    'حماية التطبيقات', 'تشفير SSL/TLS', 'إدارة الهوية والوصول',
+                    'أمان الشبكات'
+                ],
+                'storage': [
+                    'تخزين سحابي مشفر', 'نسخ احتياطي تلقائي', 'مشاركة ملفات آمنة',
+                    'تزامن عبر الأجهزة', 'استعادة البيانات السريعة', 'تخزين الأرشيف الطويل',
+                    'تخزين كائنات', 'تخزين الكتل'
+                ],
+                'additional': [
+                    'CDN وتسريع المحتوى', 'موازنة الحمل', 'تحليل الأداء',
+                    'واجهات برمجة API', 'تطبيق إدارة جوال', 'دعم فني متميز',
+                    'استشارات تقنية', 'تدريب فريقك'
+                ]
+            };
+            
+            return services[category].map(service => `
+                <div class="p-4 bg-gray-900/50 rounded-xl">
+                    <h4 class="font-bold mb-2">${service}</h4>
+                    <p class="text-gray-400 text-sm mb-3">
+                        خدمة متخصصة توفر حلولاً متقدمة مع أعلى معايير الجودة والأمان.
+                    </p>
+                    <button class="primary-btn text-sm px-3 py-1" onclick="showServiceDetails('${service}', '${category}')">
+                        <span>عرض التفاصيل</span>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        // عرض نافذة الفيديو (تمت إزالته)
+        function showVideoModal() {
+            // تمت إزالة هذه الوظيفة لأن الفيديو لم يعد موجوداً
+            showDemoModal(); // نفتح عرض توضيحي بدلاً منه
+        }
+        
+        // عرض نافذة العرض التوضيحي
+        function showDemoModal() {
+            const modal = document.getElementById('serviceModal');
+            const modalContent = modal.querySelector('.p-8');
+            
+            modalContent.innerHTML = `
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h3 class="text-3xl font-bold mb-2 gradient-text-blue">العرض التوضيحي</h3>
+                        <p class="text-gray-400">شاهد كيف يمكن لنظام الاستضافة والحماية خدمة مشروعك</p>
+                    </div>
+                    <button onclick="closeServiceModal()" class="text-gray-400 hover:text-white text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div class="p-6 bg-gray-900/50 rounded-xl">
+                        <h4 class="font-bold mb-4 gradient-text-blue">ماذا يشمل العرض؟</h4>
+                        <ul class="space-y-3">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-400 ml-3"></i>
+                                <span>جولة في لوحة التحكم</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-400 ml-3"></i>
+                                <span>عرض خدمات الحماية</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-400 ml-3"></i>
+                                <span>تجربة نظام المراقبة</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-400 ml-3"></i>
+                                <span>عرض التقارير والتحليلات</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="p-6 bg-gray-900/50 rounded-xl">
+                        <h4 class="font-bold mb-4 gradient-text-blue">تفاصيل الجلسة</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-gray-400 text-sm">المدة</p>
+                                <p class="font-bold">45 دقيقة</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 text-sm">النوع</p>
+                                <p class="font-bold">عرض مباشر عبر الإنترنت</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 text-sm">التكلفة</p>
+                                <p class="font-bold gradient-text-green">مجاني تماماً</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button onclick="closeServiceModal()" class="px-8 py-3 bg-gray-700 rounded-lg hover:bg-gray-600 mr-4">
+                        إغلاق
+                    </button>
+                    <button onclick="scheduleDemo()" class="px-8 py-3 primary-btn">
+                        <span>حجز موعد للعرض</span>
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                    </button>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        
+        // حجز موعد للعرض التوضيحي
+        function scheduleDemo() {
+            closeServiceModal();
+            alert('سيتم توجيهك إلى صفحة حجز المواعيد. يمكنك اختيار الوقت المناسب لك وسيتصل بك ممثلنا لتأكيد الموعد.');
+        }
+        
+
+        // تأثيرات الظهور عند التمرير
+        function initScrollAnimations() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            fadeElements.forEach(element => {
+                observer.observe(element);
+            });
+        }
+        
+        // إغلاق النافذة عند النقر خارجها
+        document.getElementById('serviceModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeServiceModal();
+            }
+        });
+        
+        // تهيئة كل شيء عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            initScrollAnimations();
+        });
+    </script>
+    <script src="js/request.js"></script>
+  
+</body>
+</html>

@@ -1,0 +1,21 @@
+📁 keys/private/
+├── 📁 rsa/
+│   ├── api_private_20240115.pem        # مفتاح API الحالي
+│   ├── api_private_20231215.pem        # مفتاح API السابق
+│   └── api_private_20231115.pem        # مفتاح API مؤرشف
+│
+├── 📁 ec/
+│   ├── jwt_private_secp256r1.pem       # مفتاح JWT الحالي
+│   ├── jwt_private_secp256r1_old.pem   # مفتاح JWT السابق
+│   └── backup_private_secp384r1.pem    # مفتاح النسخ الاحتياطي
+│
+├── 📁 ssh/
+│   ├── deploy_key                      # مفتاح نشر بدون كلمة سر
+│   ├── admin_key                       # مفتاح إدارة النظام
+│   └── backup_key                      # مفتاح النسخ الاحتياطي
+│
+├── 📁 pgp/
+│   ├── security_team_private.asc       # مفتاح فريق الأمن
+│   └── backup_private.asc              # مفتاح النسخ الاحتياطي
+│
+└── README.md

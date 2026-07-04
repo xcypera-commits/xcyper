@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الاستضافة السحابي - تسجيل دخول العملاء</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3);
+        }
+        
+        .cyber-border {
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cyber-border::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+            animation: scan 3s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .cyber-glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .spinner {
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .notification {
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .input-focus:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .login-form {
+            max-width: 440px;
+            margin: 0 auto;
+        }
+        
+        /* تنسيق رسالة الترحيب بعد تسجيل الدخول */
+        .welcome-message {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+    </style>
+</head>
+<body class="h-full gradient-bg text-gray-100">
+    
+    
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-80">
+        <div class="text-center">
+            <div class="spinner mx-auto mb-4"></div>
+            <p class="text-gray-400">جاري التحقق...</p>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="fixed top-4 left-4 z-50 space-y-2"></div>
+
+    <div class="min-h-screen flex items-center justify-center px-4 py-12">
+        <!-- Login Container -->
+        <div class="login-form w-full">
+            <!-- Header -->
+            <div class="text-center mb-10">
+                <div class="flex items-center justify-center mb-6">
+                    <svg class="w-16 h-16 ml-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="text-right">
+                        <h1 class="text-3xl font-bold text-blue-400">نظام الاستضافة السحابي</h1>
+                        <p class="text-gray-400 mt-2">منصة العملاء - تسجيل الدخول</p>
+                    </div>
+                </div>
+                <p class="text-gray-400">سجل الدخول لإدارة مشاريعك وخدماتك</p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="card-hover cyber-border bg-slate-800 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-blue-400 mb-8 text-right">تسجيل الدخول</h2>
+                
+                <form id="client-login-form" class="space-y-6">
+                    <!-- Email/Username -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-3 text-right">البريد الإلكتروني أو اسم المستخدم</label>
+                        <div class="relative">
+                            <input type="text" id="client-username" required 
+                                   class="w-full px-5 py-4 pr-12 bg-slate-900 border border-slate-700 rounded-xl 
+                                          focus:outline-none focus:border-blue-500 text-right input-focus
+                                          placeholder:text-gray-500"
+                                   placeholder="أدخل بريدك الإلكتروني أو اسم المستخدم">
+                            <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-2 text-right">استخدم البريد الإلكتروني المسجل لدينا</p>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="text-sm font-semibold text-right">كلمة المرور</label>
+                            <button type="button" onclick="togglePassword('client-password')" 
+                                    class="text-xs text-blue-400 hover:text-blue-300">
+                                إظهار/إخفاء
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <input type="password" id="client-password" required 
+                                   class="w-full px-5 py-4 pr-12 bg-slate-900 border border-slate-700 rounded-xl 
+                                          focus:outline-none focus:border-blue-500 text-right input-focus
+                                          placeholder:text-gray-500"
+                                   placeholder="أدخل كلمة المرور">
+                            <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Remember Me -->
+                    <div class="flex items-center justify-end space-x-2 space-x-reverse">
+                        <label for="client-remember" class="text-sm text-gray-300 cursor-pointer">
+                            تذكرني على هذا الجهاز
+                        </label>
+                        <input type="checkbox" id="client-remember" 
+                               class="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded cursor-pointer">
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" id="client-login-btn"
+                            class="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-xl font-bold text-lg 
+                                   transition-all cyber-glow mt-4">
+                        تسجيل الدخول
+                    </button>
+                </form>
+                
+                <!-- Divider -->
+                <div class="flex items-center my-8">
+                    <div class="flex-1 h-px bg-gray-700"></div>
+                    <span class="px-4 text-gray-500 text-sm">أو</span>
+                    <div class="flex-1 h-px bg-gray-700"></div>
+                </div>
+                
+                <!-- Links -->
+                <div class="text-center space-y-4">
+                    <a href="client-forgot-password.html" 
+                       class="block text-blue-400 hover:text-blue-300 text-sm font-semibold transition-colors">
+                        نسيت كلمة المرور؟
+                    </a>
+                    <a href="client-register.html" 
+                       class="block text-green-400 hover:text-green-300 text-sm font-semibold transition-colors">
+                        ليس لديك حساب؟ سجل الآن
+                    </a>
+                    
+                    <!-- رابط العودة للصفحة الرئيسية -->
+                    <a href="index.php" 
+                       class="block text-gray-400 hover:text-gray-300 text-sm transition-colors mt-4">
+                        <i class="fas fa-arrow-right ml-2"></i>
+                        العودة للصفحة الرئيسية
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Security Info -->
+            <div class="mt-8 text-center">
+                <div class="flex items-center justify-center space-x-2 space-x-reverse mb-4">
+                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                    <p class="text-sm text-gray-400">نظام آمن ومشفّر باستخدام تقنيات الحماية المتقدمة</p>
+                </div>
+                <p class="text-xs text-gray-500">© 2024 نظام الاستضافة السحابي. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+// =====================================================
+// نظام تسجيل الدخول - X Cyber Hosting
+// =====================================================
+
+let isProcessing = false;
+
+// تبديل عرض/إخفاء كلمة المرور
+function togglePassword(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    const type = passwordInput.type === 'password' ? 'text' : 'password';
+    passwordInput.type = type;
+}
+
+// معالجة تسجيل الدخول
+document.getElementById('client-login-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (isProcessing) return;
+    
+    const username = document.getElementById('client-username').value.trim();
+    const password = document.getElementById('client-password').value;
+    const remember = document.getElementById('client-remember').checked;
+    
+    if (!username || !password) {
+        showNotification('يرجى إدخال اسم المستخدم وكلمة المرور', 'error');
+        return;
+    }
+    
+    startProcessing();
+    
+    try {
+        // إرسال طلب تسجيل الدخول
+        const response = await fetch('api/login.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            console.log('✅ نجاح:', result);
+            
+            // التأكد من وجود البيانات
+            if (result.data && result.data.visitor) {
+                // حفظ بيانات الجلسة
+                sessionStorage.setItem('visitor_id', result.data.visitor.id);
+                sessionStorage.setItem('visitor_name', result.data.visitor.full_name);
+                sessionStorage.setItem('visitor_email', result.data.visitor.email);
+                sessionStorage.setItem('visitor_username', result.data.visitor.username);
+                sessionStorage.setItem('visitor_role', result.data.visitor.role);
+                sessionStorage.setItem('visitor_logged_in', 'true');
+                
+                // حفظ في localStorage إذا تم اختيار "تذكرني"
+                if (remember) {
+                    localStorage.setItem('visitor_email', result.data.visitor.email);
+                    localStorage.setItem('visitor_username', result.data.visitor.username);
+                } else {
+                    localStorage.removeItem('visitor_email');
+                    localStorage.removeItem('visitor_username');
+                }
+                
+                const message = result.data.is_new ? 
+                    '✅ تم إنشاء حساب جديد وتسجيل الدخول!' : 
+                    '✅ تم تسجيل الدخول بنجاح!';
+                
+                showNotification(message, 'success');
+                
+                // التحويل للصفحة الرئيسية
+                setTimeout(() => {
+                    window.location.href = 'index.php';
+                }, 1500);
+            } else {
+                console.error('❌ البيانات غير مكتملة:', result);
+                showNotification('❌ خطأ في استجابة الخادم', 'error');
+                stopProcessing();
+            }
+        } else {
+            showNotification(`❌ ${result.message || 'حدث خطأ'}`, 'error');
+            stopProcessing();
+        }
+        
+    } catch (error) {
+        console.error('Login error:', error);
+        showNotification('❌ حدث خطأ في الاتصال بالسيرفر', 'error');
+        stopProcessing();
+    }
+});
+
+// بدء المعالجة
+function startProcessing() {
+    isProcessing = true;
+    const btn = document.getElementById('client-login-btn');
+    btn.disabled = true;
+    btn.innerHTML = `
+        <div class="flex items-center justify-center">
+            <div class="spinner-small w-5 h-5 border-2 border-white border-t-transparent rounded-full ml-3"></div>
+            جاري التحقق...
+        </div>
+    `;
+    document.getElementById('loading-spinner').classList.remove('hidden');
+    document.getElementById('loading-spinner').classList.add('flex');
+}
+
+// إيقاف المعالجة
+function stopProcessing() {
+    isProcessing = false;
+    const btn = document.getElementById('client-login-btn');
+    btn.disabled = false;
+    btn.innerHTML = 'تسجيل الدخول';
+    document.getElementById('loading-spinner').classList.add('hidden');
+    document.getElementById('loading-spinner').classList.remove('flex');
+}
+
+// عرض الإشعارات
+function showNotification(message, type = 'info') {
+    const container = document.getElementById('notification-container');
+    const notification = document.createElement('div');
+    
+    const colors = {
+        'success': 'bg-green-600',
+        'error': 'bg-red-600',
+        'info': 'bg-blue-600',
+        'warning': 'bg-yellow-600'
+    };
+    
+    const icons = {
+        'success': '✓',
+        'error': '✗',
+        'info': 'ℹ',
+        'warning': '⚠'
+    };
+    
+    notification.className = `notification ${colors[type]} text-white px-6 py-4 rounded-lg shadow-lg max-w-sm flex items-center`;
+    notification.innerHTML = `
+        <span class="ml-3 font-bold text-xl">${icons[type]}</span>
+        <span>${message}</span>
+    `;
+    
+    container.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transition = 'opacity 0.3s';
+        setTimeout(() => notification.remove(), 300);
+    }, 4000);
+}
+
+// التحقق من وجود بريد محفوظ (تذكرني)
+document.addEventListener('DOMContentLoaded', function() {
+    const savedEmail = localStorage.getItem('visitor_email');
+    const savedUsername = localStorage.getItem('visitor_username');
+    
+    if (savedEmail || savedUsername) {
+        document.getElementById('client-username').value = savedEmail || savedUsername;
+        document.getElementById('client-remember').checked = true;
+    }
+    
+    // التحقق إذا كان المستخدم مسجل الدخول بالفعل
+    const isLoggedIn = sessionStorage.getItem('visitor_logged_in') === 'true';
+    if (isLoggedIn) {
+        // إظهار رسالة ترحيب
+        const visitorName = sessionStorage.getItem('visitor_name');
+        showNotification(`مرحباً بعودتك ${visitorName}!`, 'success');
+        
+        // تأخير بسيط ثم التحويل
+        setTimeout(() => {
+            window.location.href = 'index.php';
+        }, 1000);
+    }
+});
+
+// ستايل إضافي للسبنر
+const style = document.createElement('style');
+style.textContent = `
+    .spinner-small {
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+document.head.appendChild(style);
+
+</script>
+</body>
+</html>

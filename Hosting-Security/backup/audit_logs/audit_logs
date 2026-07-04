@@ -1,0 +1,165 @@
+📁 backup/audit_logs/
+├── 📁 hourly/
+│   ├── 2024-01-15/
+│   │   ├── 00/
+│   │   │   ├── audit.log.gz.enc
+│   │   │   ├── access.log.gz.enc
+│   │   │   └── threat.log.gz.enc
+│   │   │
+│   │   ├── 01/
+│   │   │   └── ...
+│   │   │
+│   │   └── 23/
+│   │       └── ...
+│   │
+│   └── 2024-01-14/
+│       └── ...
+│
+├── 📁 daily/
+│   ├── 2024-01-15.tar.gz.enc
+│   ├── 2024-01-14.tar.gz.enc
+│   ├── 2024-01-13.tar.gz.enc
+│   └── ...
+│
+├── 📁 weekly/
+│   ├── week_02_2024.tar.gz.enc
+│   ├── week_01_2024.tar.gz.enc
+│   └── ...
+│
+├── 📁 monthly/
+│   ├── 2024-01.tar.gz.enc
+│   ├── 2023-12.tar.gz.enc
+│   └── ...
+│
+├── 📁 annual/
+│   ├── 2023.tar.gz.enc
+│   ├── 2022.tar.gz.enc
+│   └── 2021.tar.gz.enc
+│
+└── 📁 compliance/
+    ├── pci_dss/
+    │   ├── 2024_q1/
+    │   │   ├── audit_logs.tar.gz.enc
+    │   │   └── compliance_report.pdf
+    │   │
+    │   └── 2023_q4/
+    │       └── ...
+    │
+    ├── gdpr/
+    │   ├── 2024/
+    │   │   ├── access_logs.tar.gz.enc
+    │   │   └── data_processing_logs.tar.gz.enc
+    │   │
+    │   └── 2023/
+    │       └── ...
+    │
+    └── iso_27001/
+        ├── 2024/
+        │   ├── security_logs.tar.gz.enc
+        │   └── audit_trail.tar.gz.enc
+        │
+        └── 2023/
+            └── ...
+
+
+            #!/bin/bash
+# backup/audit_logs/manage_logs.sh
+
+LOG_DIR="/var/log/hosting/security"
+BACKUP_BASE="/var/backup/audit_logs"
+RETENTION_DAYS=30
+RETENTION_WEEKS=12
+RETENTION_MONTHS=24
+
+# دالة لضغط وتشفير السجلات
+backup_logs() {
+    PERIOD=$1
+    LOG_TYPE=$2
+    SOURCE_FILE="$LOG_DIR/$LOG_TYPE.log"
+    BACKUP_FILE="$BACKUP_BASE/$PERIOD/$(date +%Y-%m-%d)/$LOG_TYPE.log.gz.enc"
+    
+    if [ -f "$SOURCE_FILE" ]; then
+        # إنشاء المجلد إذا لم يكن موجوداً
+        mkdir -p "$(dirname "$BACKUP_FILE")"
+        
+        # ضغط
+        gzip -c "$SOURCE_FILE" > "${BACKUP_FILE%.enc}"
+        
+        # تشفير
+        openssl enc -aes-256-gcm \
+            -in "${BACKUP_FILE%.enc}" \
+            -out "$BACKUP_FILE" \
+            -pass file:/etc/hosting/keys/backup.key \
+            -pbkdf2
+        
+        # حذف الملف المؤقت
+        rm "${BACKUP_FILE%.enc}"
+        
+        # إفراغ السجل الأصلي
+        > "$SOURCE_FILE"
+        
+        echo "Backed up $LOG_TYPE to $BACKUP_FILE"
+    fi
+}
+
+# النسخ الاحتياطي اليومي
+backup_logs "daily" "audit"
+backup_logs "daily" "access" 
+backup_logs "daily" "threat"
+backup_logs "daily" "error"
+backup_logs "daily" "incident"
+
+# أرشفة أسبوعية (يوم الأحد)
+if [ "$(date +%u)" -eq 7 ]; then
+    tar -czf "$BACKUP_BASE/weekly/week_$(date +%Y_%V).tar.gz" "$BACKUP_BASE/daily/$(date +%Y-%m-%d)/"
+    openssl enc -aes-256-gcm \
+        -in "$BACKUP_BASE/weekly/week_$(date +%Y_%V).tar.gz" \
+        -out "$BACKUP_BASE/weekly/week_$(date +%Y_%V).tar.gz.enc" \
+        -pass file:/etc/hosting/keys/backup.key \
+        -pbkdf2
+    rm "$BACKUP_BASE/weekly/week_$(date +%Y_%V).tar.gz"
+fi
+
+# أرشفة شهرية (أول الشهر)
+if [ "$(date +%d)" -eq 1 ]; then
+    MONTH=$(date +%Y-%m)
+    tar -czf "$BACKUP_BASE/monthly/$MONTH.tar.gz" "$BACKUP_BASE/daily/$MONTH-*/"
+    openssl enc -aes-256-gcm \
+        -in "$BACKUP_BASE/monthly/$MONTH.tar.gz" \
+        -out "$BACKUP_BASE/monthly/$MONTH.tar.gz.enc" \
+        -pass file:/etc/hosting/keys/backup.key \
+        -pbkdf2
+    rm "$BACKUP_BASE/monthly/$MONTH.tar.gz"
+fi
+
+# تنظيف السجلات القديمة
+find "$BACKUP_BASE/daily/" -type f -name "*.enc" -mtime +$RETENTION_DAYS -delete
+find "$BACKUP_BASE/weekly/" -type f -name "*.enc" -mtime +$((RETENTION_WEEKS * 7)) -delete
+find "$BACKUP_BASE/monthly/" -type f -name "*.enc" -mtime +$((RETENTION_MONTHS * 30)) -delete
+
+# التحقق من سلامة السجلات
+verify_backup() {
+    BACKUP_FILE=$1
+    
+    # التحقق من checksum
+    EXPECTED_CHECKSUM=$(cat "${BACKUP_FILE}.sha256" 2>/dev/null || echo "")
+    ACTUAL_CHECKSUM=$(sha256sum "$BACKUP_FILE" | cut -d' ' -f1)
+    
+    if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]; then
+        echo "ERROR: Checksum mismatch for $BACKUP_FILE" >> /var/log/backup_errors.log
+        send_alert "backup_integrity" "Checksum mismatch for $BACKUP_FILE"
+    fi
+    
+    # التحقق من إمكانية فك التشفير
+    if openssl enc -d -aes-256-gcm -in "$BACKUP_FILE" -pass file:/etc/hosting/keys/backup.key -pbkdf2 -out /dev/null 2>/dev/null; then
+        echo "OK: $BACKUP_FILE is valid"
+    else
+        echo "ERROR: Cannot decrypt $BACKUP_FILE" >> /var/log/backup_errors.log
+        send_alert "backup_corruption" "Cannot decrypt $BACKUP_FILE"
+    fi
+}
+
+# التحقق من جميع النسخ الاحتياطية الحديثة
+find "$BACKUP_BASE/daily/" -name "*.enc" -mtime -7 | while read backup; do
+    verify_backup "$backup"
+done

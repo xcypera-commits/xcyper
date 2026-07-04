@@ -1,0 +1,9 @@
+# تنسيق سجل التدقيق
+[2024-01-15 08:30:15] [INFO] [AUDIT] User: admin@system.com (ID: 1) - Action: LOGIN_SUCCESS - IP: 192.168.1.100 - UserAgent: Mozilla/5.0 - SessionID: abc123def456
+[2024-01-15 08:35:22] [INFO] [AUDIT] User: admin@system.com (ID: 1) - Action: CONFIG_UPDATE - Resource: security_settings - Changes: {"session_timeout":"3600->1800"} - IP: 192.168.1.100
+[2024-01-15 09:15:45] [WARN] [AUDIT] User: client@example.com (ID: 45) - Action: FAILED_LOGIN - Attempts: 3/5 - IP: 203.0.113.5 - Country: CN
+[2024-01-15 10:20:33] [INFO] [AUDIT] User: support@system.com (ID: 3) - Action: TICKET_ACCESS - Resource: ticket_789 - Permission: READ - IP: 192.168.1.150
+[2024-01-15 11:45:12] [ERROR] [AUDIT] System: BACKUP_FAILED - Component: database - Error: Connection timeout - Duration: 120s - IP: 127.0.0.1
+[2024-01-15 14:30:55] [CRITICAL] [AUDIT] User: unknown - Action: BRUTE_FORCE_ATTEMPT - IP: 185.220.101.5 - Attempts: 15 - Blocked: YES - Duration: 3600s
+
+# Schema: [Timestamp] [Level] [Type] Details...

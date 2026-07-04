@@ -1,0 +1,15 @@
+# تنسيق سجل الحوادث
+[2024-01-15 14:30:55] [INCIDENT_START] ID: INC-20240115-001 - Type: BRUTE_FORCE_ATTACK - Severity: HIGH - IP: 185.220.101.5 - Initial Detection: RateLimitMiddleware
+[2024-01-15 14:31:05] [INCIDENT_UPDATE] ID: INC-20240115-001 - Action: IP_BLOCKED - BlockDuration: 3600s - By: System - Reason: Multiple failed login attempts
+[2024-01-15 14:32:15] [INCIDENT_UPDATE] ID: INC-20240115-001 - Action: ALERT_SENT - Recipients: ["security@hostingsystem.com"] - Method: Email
+[2024-01-15 14:35:45] [INCIDENT_UPDATE] ID: INC-20240115-001 - Investigation: IP traced to known threat actor - ThreatIntel: TOR exit node
+[2024-01-15 14:40:33] [INCIDENT_UPDATE] ID: INC-20240115-001 - Action: THREAT_INTEL_UPDATED - Source: AbuseIPDB - Score: 95/100
+[2024-01-15 15:30:55] [INCIDENT_RESOLVED] ID: INC-20240115-001 - Resolution: IP permanently blacklisted - Lessons: Implement stricter rate limiting
+
+[2024-01-15 16:20:33] [INCIDENT_START] ID: INC-20240115-002 - Type: SQL_INJECTION_ATTEMPT - Severity: CRITICAL - IP: 198.51.100.23 - Resource: /api/users
+[2024-01-15 16:20:34] [INCIDENT_UPDATE] ID: INC-20240115-002 - Action: REQUEST_BLOCKED - By: SQLInjectionProtection - Payload: "SELECT * FROM users"
+[2024-01-15 16:21:45] [INCIDENT_UPDATE] ID: INC-20240115-002 - Investigation: Payload analysis complete - Technique: Union-based SQLi
+[2024-01-15 16:25:15] [INCIDENT_UPDATE] ID: INC-20240115-002 - Action: IP_REPORTED - To: ["abuse@provider.com", "cert@sa"] 
+[2024-01-15 16:30:45] [INCIDENT_RESOLVED] ID: INC-20240115-002 - Resolution: IP blocked and reported - Lessons: Review input validation rules
+
+# Schema: [Timestamp] [Event] IncidentID - Details...

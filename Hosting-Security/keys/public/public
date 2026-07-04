@@ -1,0 +1,22 @@
+📁 keys/public/
+├── 📁 rsa/
+│   ├── api_public_20240115.pem
+│   ├── api_public_20231215.pem
+│   └── api_public_20231115.pem
+│
+├── 📁 ec/
+│   ├── jwt_public_secp256r1.pem
+│   ├── jwt_public_secp256r1_old.pem
+│   └── backup_public_secp384r1.pem
+│
+├── 📁 ssh/
+│   ├── deploy_key.pub
+│   ├── admin_key.pub
+│   └── backup_key.pub
+│
+├── 📁 pgp/
+│   ├── security_team_public.asc
+│   ├── support_team_public.asc
+│   └── backup_public.asc
+│
+└── authorized_keys                    # للوصول SSH

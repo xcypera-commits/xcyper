@@ -1,0 +1,87 @@
+📁 keys/certificates/
+├── 📁 ssl/
+│   ├── 📁 live/
+│   │   ├── hostingsystem.com/
+│   │   │   ├── fullchain.pem          # سلسلة الشهادات الكاملة
+│   │   │   ├── privkey.pem            # المفتاح الخاص
+│   │   │   ├── chain.pem              # سلسلة الوسيط
+│   │   │   └── cert.pem               # الشهادة فقط
+│   │   │
+│   │   ├── api.hostingsystem.com/
+│   │   │   └── ...
+│   │   │
+│   │   └── admin.hostingsystem.com/
+│   │       └── ...
+│   │
+│   ├── 📁 archive/
+│   │   ├── hostingsystem.com/
+│   │   │   ├── 2024/
+│   │   │   │   ├── cert1.pem
+│   │   │   │   ├── cert2.pem
+│   │   │   │   └── ...
+│   │   │   └── 2023/
+│   │   │       └── ...
+│   │   └── ...
+│   │
+│   └── 📁 csr/
+│       ├── hostingsystem.com_202401.csr
+│       ├── api.hostingsystem.com_202401.csr
+│       └── ...
+│
+├── 📁 code_signing/
+│   ├── hosting_system.p12             # شهادة توقيع الكود
+│   ├── hosting_system.crt
+│   └── hosting_system.pem
+│
+├── 📁 client/
+│   ├── 📁 mobile_app/
+│   │   ├── client.p12
+│   │   └── client.crt
+│   │
+│   └── 📁 api_clients/
+│       ├── partner1.p12
+│       ├── partner2.p12
+│       └── ...
+│
+└── 📁 internal/
+    ├── ca/
+    │   ├── root_ca.pem
+    │   ├── intermediate_ca.pem
+    │   └── crl.pem
+    │
+    └── 📁 services/
+        ├── database.pem
+        ├── redis.pem
+        └── rabbitmq.pem
+
+
+        #!/bin/bash
+# keys/certificates/ssl_management.sh
+
+# تجديد الشهادات تلقائياً
+certbot renew --quiet --post-hook "systemctl reload nginx"
+
+# التحقق من صلاحية الشهادات
+check_cert_expiry() {
+    DOMAIN=$1
+    CERT_FILE="/etc/letsencrypt/live/$DOMAIN/cert.pem"
+    
+    if [ -f "$CERT_FILE" ]; then
+        EXPIRY_DATE=$(openssl x509 -enddate -noout -in "$CERT_FILE" | cut -d= -f2)
+        EXPIRY_SECONDS=$(date -d "$EXPIRY_DATE" +%s)
+        CURRENT_SECONDS=$(date +%s)
+        DAYS_LEFT=$(( (EXPIRY_SECONDS - CURRENT_SECONDS) / 86400 ))
+        
+        if [ $DAYS_LEFT -lt 30 ]; then
+            echo "WARNING: Certificate for $DOMAIN expires in $DAYS_LEFT days"
+            # إرسال تنبيه
+            send_alert "cert_expiry" "Certificate for $DOMAIN expires in $DAYS_LEFT days"
+        fi
+    fi
+}
+
+# التحقق من جميع النطاقات
+DOMAINS=("hostingsystem.com" "api.hostingsystem.com" "admin.hostingsystem.com")
+for domain in "${DOMAINS[@]}"; do
+    check_cert_expiry "$domain"
+done

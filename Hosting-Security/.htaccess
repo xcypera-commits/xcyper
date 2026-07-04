@@ -1,0 +1,20 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# السماح بالوصول للملفات الموجودة
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# السماح بالوصول للمجلدات الموجودة (عدا المحمية)
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_URI} !^/(includes|config|logs|backups)/ [NC]
+RewriteRule ^ - [L]
+
+# منع المجلدات المحمية
+RewriteRule ^(includes|config|logs|backups)/ - [F,L]
+
+# توجيه الباقي إلى index.php
+RewriteRule ^ index.php [L]
+</IfModule>
+
+Options -Indexes

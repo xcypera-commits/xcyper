@@ -1,0 +1,113 @@
+ hosting-system/ (مجلد مشروعك الحالي)
+│
+├── 📁 includes/
+│   └── 📁 security/
+│       ├── 📁 config/
+│       │   ├── security-config.php
+│       │   ├── permissions-config.php
+│       │   └── encryption-config.php
+│       │
+│       ├── 📁 core/
+│       │   ├── SecurityConstants.php
+│       │   ├── SecurityUtils.php
+│       │   ├── SecurityLogger.php
+│       │   └── SecurityValidator.php
+│       │
+│       ├── 📁 authentication/
+│       │   ├── AuthManager.php
+│       │   ├── SessionManager.php
+│       │   ├── TokenManager.php
+│       │   ├── PasswordManager.php
+│       │   ├── MFAManager.php
+│       │   └── SSOManager.php
+│       │
+│       ├── 📁 authorization/
+│       │   ├── RoleManager.php
+│       │   ├── PermissionManager.php
+│       │   ├── AccessControl.php
+│       │   └── PolicyManager.php
+│       │
+│       ├── 📁 encryption/
+│       │   ├── EncryptionService.php
+│       │   ├── HashManager.php
+│       │   ├── KeyManager.php
+│       │   └── DataMasking.php
+│       │
+│       ├── 📁 firewall/
+│       │   ├── FirewallManager.php
+│       │   ├── RateLimiter.php
+│       │   ├── IPFilter.php
+│       │   └── RequestValidator.php
+│       │
+│       ├── 📁 monitoring/
+│       │   ├── ActivityMonitor.php
+│       │   ├── ThreatDetector.php
+│       │   ├── AnomalyDetector.php
+│       │   └── AlertSystem.php
+│       │
+│       ├── 📁 validation/
+│       │   ├── InputValidator.php
+│       │   ├── Sanitizer.php
+│       │   ├── XSSProtection.php
+│       │   ├── SQLInjectionProtection.php
+│       │   └── CSRFProtection.php
+│       │
+│       ├── 📁 audit/
+│       │   ├── AuditTrail.php
+│       │   ├── ComplianceChecker.php
+│       │   └── ReportGenerator.php
+│       │
+│       ├── 📁 backup/
+│       │   ├── BackupManager.php
+│       │   ├── RecoveryManager.php
+│       │   └── IntegrityChecker.php
+│       │
+│       └── 📁 middleware/
+│           ├── SecurityMiddleware.php
+│           ├── CORSMiddleware.php
+│           ├── RateLimitMiddleware.php
+│           └── SecurityHeaders.php
+│
+├── 📁 logs/
+│   └── 📁 security/
+│       ├── audit.log
+│       ├── access.log
+│       ├── threat.log
+│       ├── error.log
+│       └── incident.log
+│
+├── 📁 keys/
+│   ├── 📁 private/
+│   ├── 📁 public/
+│   ├── 📁 certificates/
+│   └── 📁 secrets/
+│
+├── 📁 pages/
+│   └── 📁 security/
+│       ├── login.php
+│       ├── mfa-verification.php
+│       ├── password-reset.php
+│       ├── security-settings.php
+│       ├── audit-logs.php
+│       ├── activity-monitor.php
+│       └── incident-response.php
+│
+├── 📁 api/
+│   └── 📁 security/
+│       ├── auth.php
+│       ├── permissions.php
+│       ├── audit.php
+│       ├── monitoring.php
+│       └── encryption.php
+│
+├── .htaccess
+├── security-headers.php
+├── security-init.php
+├── security-functions.php
+└── index.php (ملفك الرئيسي المعدل)
+
+
+<?php
+require_once __DIR__  'security-init.php';
+require_once __DIR__  'security-functions.php';
+?>

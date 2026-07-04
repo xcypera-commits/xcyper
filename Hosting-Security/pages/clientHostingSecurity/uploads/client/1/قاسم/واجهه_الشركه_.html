@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X Cyber - حماة الفضاء الإلكتروني</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cyber-blue: #00f3ff;
+            --matrix-green: #00ff41;
+            --neon-purple: #9d00ff;
+            --danger-red: #ff003c;
+            --secure-yellow: #ffcc00;
+            --dark-bg: #0a0a1a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background: var(--dark-bg);
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        /* شبكة خلفية سايبرية متحركة */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -3;
+            animation: gridMove 20s linear infinite;
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        /* تأثيرات النيون */
+        .cyber-glow {
+            text-shadow: 
+                0 0 10px var(--cyber-blue),
+                0 0 20px var(--cyber-blue),
+                0 0 40px var(--cyber-blue);
+            animation: cyberPulse 2s infinite alternate;
+        }
+        
+        @keyframes cyberPulse {
+            0% { text-shadow: 0 0 10px var(--cyber-blue); }
+            100% { text-shadow: 0 0 20px var(--cyber-blue), 0 0 30px var(--neon-purple); }
+        }
+        
+        /* أشكال متحركة سايبرية */
+        
+        /* 1. شكل الدرع المتحرك (للأمن السيبراني) */
+        .shield-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .shield-animation::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 140px;
+            background: conic-gradient(from 0deg, transparent, var(--cyber-blue), transparent);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            animation: shieldRotate 4s linear infinite;
+        }
+        
+        @keyframes shieldRotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        /* 2. شكل الشبكة المتحركة (للشبكات) */
+        .network-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .network-animation::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            background-image: 
+                radial-gradient(circle at center, transparent 60%, var(--matrix-green) 100%),
+                repeating-radial-gradient(circle at center, transparent 0 4px, rgba(0, 255, 65, 0.1) 4px 8px);
+            border-radius: 50%;
+            animation: networkPulse 3s infinite alternate;
+        }
+        
+        @keyframes networkPulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+            100% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+        }
+        
+        /* 3. شكل السحابة المتحركة (للحلول السحابية) */
+        .cloud-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .cloud-animation::before {
+            content: '☁';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            color: var(--cyber-blue);
+            animation: cloudFloat 6s ease-in-out infinite;
+        }
+        
+        .cloud-animation::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 50px;
+            background: radial-gradient(ellipse at center, rgba(0, 243, 255, 0.2), transparent 70%);
+            animation: cloudGlow 3s infinite alternate;
+        }
+        
+        @keyframes cloudFloat {
+            0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+            50% { transform: translate(-50%, -50%) translateY(-20px); }
+        }
+        
+        @keyframes cloudGlow {
+            0% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.2); }
+        }
+        
+        /* 4. شكل التطبيق المتحرك (لتطوير الويب) */
+        .app-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .app-animation::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 160px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 20px;
+            animation: appOpen 4s infinite alternate;
+        }
+        
+        .app-animation::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 140px;
+            background: linear-gradient(45deg, var(--neon-purple), var(--cyber-blue));
+            border-radius: 15px;
+            animation: appContent 2s infinite alternate;
+        }
+        
+        @keyframes appOpen {
+            0% { transform: translate(-50%, -50%) scale(0.9) rotate(-5deg); }
+            100% { transform: translate(-50%, -50%) scale(1.1) rotate(5deg); }
+        }
+        
+        @keyframes appContent {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        /* 5. شكل الحماية المتحرك (للحماية) */
+        .protection-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .protection-animation::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            border: 3px solid var(--danger-red);
+            border-radius: 50%;
+            animation: protectionRing 3s infinite;
+        }
+        
+        .protection-animation::after {
+            content: '🚫';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 60px;
+            animation: protectionPulse 2s infinite alternate;
+        }
+        
+        @keyframes protectionRing {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+        }
+        
+        @keyframes protectionPulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            100% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+        
+        /* 6. شكل الأكاديمية المتحرك */
+        .academy-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .academy-animation::before {
+            content: '🎓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 80px;
+            animation: academyFloat 4s ease-in-out infinite;
+        }
+        
+        .academy-animation::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, var(--secure-yellow), transparent 70%);
+            animation: academyGlow 3s infinite alternate;
+        }
+        
+        @keyframes academyFloat {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            25% { transform: translate(-50%, -50%) rotate(10deg); }
+            75% { transform: translate(-50%, -50%) rotate(-10deg); }
+        }
+        
+        /* 7. شكل إدارة الحسابات المتحرك */
+        .accounts-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .accounts-animation::before {
+            content: '👤';
+            position: absolute;
+            top: 40%;
+            left: 40%;
+            font-size: 40px;
+            animation: accountMove 3s infinite alternate;
+        }
+        
+        .accounts-animation::after {
+            content: '👤';
+            position: absolute;
+            top: 60%;
+            left: 60%;
+            font-size: 40px;
+            animation: accountMove 3s infinite alternate-reverse;
+        }
+        
+        @keyframes accountMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(20px, -20px); }
+        }
+        
+        /* 8. شكل مواقع التواصل المتحرك */
+        .social-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .social-animation::before,
+        .social-animation::after,
+        .social-animation .social-icon {
+            position: absolute;
+            font-size: 30px;
+        }
+        
+        .social-animation::before {
+            content: '📱';
+            top: 30%;
+            left: 30%;
+            animation: socialFloat 4s infinite;
+        }
+        
+        .social-animation::after {
+            content: '💬';
+            top: 60%;
+            left: 60%;
+            animation: socialFloat 4s infinite reverse;
+        }
+        
+        .social-animation .social-icon {
+            content: '📸';
+            top: 45%;
+            left: 45%;
+            animation: socialFloat 4s infinite 1s;
+        }
+        
+        @keyframes socialFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        /* بطاقات الخدمات */
+        .service-card {
+            background: linear-gradient(145deg, rgba(10, 10, 26, 0.8), rgba(20, 20, 40, 0.9));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0, 243, 255, 0.05), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .service-card:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-15px);
+            border-color: var(--cyber-blue);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 60px rgba(0, 243, 255, 0.2);
+        }
+        
+        /* تأثير المطر المصفوفي */
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+            opacity: 0.1;
+        }
+        
+        /* الأزرار السايبرية */
+        .cyber-button {
+            background: linear-gradient(45deg, var(--neon-purple), var(--cyber-blue));
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .cyber-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--cyber-blue), var(--matrix-green));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .cyber-button:hover::before {
+            opacity: 1;
+        }
+        
+        .cyber-button span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cyber-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 10px 20px rgba(0, 243, 255, 0.3),
+                0 0 40px rgba(157, 0, 255, 0.2);
+        }
+        
+        /* التدرج النصي */
+        .gradient-text {
+            background: linear-gradient(45deg, var(--cyber-blue), var(--matrix-green), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradientMove 3s ease infinite;
+        }
+        
+        @keyframes gradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- شبكة خلفية -->
+    <div class="cyber-grid"></div>
+    
+    <!-- مطر المصفوفة -->
+    <div class="matrix-rain" id="matrixRain"></div>
+    
+    <!-- الهيدر -->
+    <header class="relative z-10">
+        <div class="container mx-auto px-6 py-6">
+            <div class="flex justify-between items-center">
+                <!-- الشعار -->
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                        <span class="text-2xl font-black cyber-glow">XC</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-black gradient-text">X CYBER</h1>
+                        <p class="text-xs text-cyan-400">حماة الفضاء الإلكتروني</p>
+                    </div>
+                </div>
+                
+                <!-- القائمة -->
+                <nav class="hidden md:flex items-center space-x-8 space-x-reverse">
+                    <a href="#home" class="text-gray-300 hover:text-cyan-400 transition-all duration-300 font-medium">الرئيسية</a>
+                    <a href="#services" class="text-gray-300 hover:text-cyan-400 transition-all duration-300 font-medium">خدماتنا</a>
+                    <a href="#about" class="text-gray-300 hover:text-cyan-400 transition-all duration-300 font-medium">من نحن</a>
+                    <a href="#contact" class="text-gray-300 hover:text-cyan-400 transition-all duration-300 font-medium">اتصل بنا</a>
+                </nav>
+                
+                <!-- زر الدخول -->
+                <button class="cyber-button">
+                    <span>الدخول للنظام</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- القسم الرئيسي -->
+    <section id="home" class="relative z-10 min-h-screen flex items-center">
+        <div class="container mx-auto px-6 py-20">
+            <div class="text-center">
+                <!-- شعار متحرك -->
+                <div class="shield-animation mx-auto mb-8"></div>
+                
+                <h1 class="text-5xl md:text-7xl font-black mb-6">
+                    <span class="gradient-text">X CYBER</span>
+                    <br>
+                    <span class="cyber-glow">حماة العالم الرقمي</span>
+                </h1>
+                
+                <p class="text-xl text-gray-300 mb-10 max-w-3xl mx-auto">
+                    نقدم حلولاً سايبرية متكاملة تحمي مستقبلك الرقمي بأحدث التقنيات 
+                    وأعلى معايير الأمان العالمي
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                    <button class="cyber-button text-lg px-10 py-4">
+                        <span>اكتشف خدماتنا</span>
+                        <i class="fas fa-arrow-left mr-3"></i>
+                    </button>
+                    
+                    <button class="px-10 py-4 border-2 border-cyan-500/50 rounded-full hover:border-cyan-400 transition-all duration-300 text-lg">
+                        <span>شاهد العرض التوضيحي</span>
+                        <i class="fas fa-play ml-3"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- قسم خدماتنا الأساسية -->
+    <section id="services" class="relative z-10 py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-black gradient-text mb-6">
+                    خدماتنا <span class="cyber-glow">الأساسية</span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    8 خدمات أساسية تغطي جميع جوانب احتياجاتك الرقمية بأعلى معايير الأمان
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- الخدمة 1: تطوير تطبيقات الويب -->
+                <div class="service-card p-8">
+                    <div class="app-animation mx-auto mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">تطوير تطبيقات الويب</h3>
+                    <p class="text-gray-300 mb-6">
+                        تصميم وتطوير تطبيقات ويب متقدمة بمعمارية آمنة وتجربة مستخدم فائقة
+                    </p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            تطبيقات أحادية الصفحة
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            تطبيقات تقدمية PWA
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            واجهات برمجة متطورة
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 border border-cyan-500/30 rounded-lg hover:border-cyan-400 transition-all duration-300">
+                        <span>تفاصيل الخدمة</span>
+                    </button>
+                </div>
+                
+                <!-- الخدمة 2: الاستضافة والحماية -->
+                <div class="service-card p-8">
+                    <div class="protection-animation mx-auto mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">الاستضافة والحماية</h3>
+                    <p class="text-gray-300 mb-6">
+                        استضافة فائقة السرعة مع أنظمة حماية متعددة الطبقات ونسخ احتياطي تلقائي
+                    </p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            استضافة VPS مخصصة
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            حماية من DDoS
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            SSL مجاني
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 border border-cyan-500/30 rounded-lg hover:border-cyan-400 transition-all duration-300">
+                        <span>تفاصيل الخدمة</span>
+                    </button>
+                </div>
+                
+                <!-- الخدمة 3: الحلول السحابية -->
+                <div class="service-card p-8">
+                    <div class="cloud-animation mx-auto mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">الحلول السحابية</h3>
+                    <p class="text-gray-300 mb-6">
+                        بنية تحتية سحابية مرنة وقابلة للتوسع مع إدارة مركزية وأمان متكامل
+                    </p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            خوادم سحابية مرنة
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            تخزين سحابي آمن
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            نسخ احتياطي تلقائي
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 border border-cyan-500/30 rounded-lg hover:border-cyan-400 transition-all duration-300">
+                        <span>تفاصيل الخدمة</span>
+                    </button>
+                </div>
+                
+                <!-- الخدمة 4: الشبكات -->
+                <div class="service-card p-8">
+                    <div class="network-animation mx-auto mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">الشبكات</h3>
+                    <p class="text-gray-300 mb-6">
+                        برمجة وإدارة وحماية الشبكات عن بعد بأنظمة مراقبة ذكية وأدوات تحكم متطورة
+                    </p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            تصميم الشبكات
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            إدارة الشبكات عن بعد
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            حماية الشبكات
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 border border-cyan-500/30 rounded-lg hover:border-cyan-400 transition-all duration-300">
+                        <span>تفاصيل الخدمة</span>
+                    </button>
+                </div>
+                
+                <!-- الخدمة 5: الأمن السيبراني -->
+                <div class="service-card p-8">
+                    <div class="shield-animation mx-auto mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">الأمن السيبراني</h3>
+                    <p class="text-gray-300 mb-6">
+                        حماية شاملة من التهديدات الإلكترونية مع مراقبة مستمرة واستجابة فورية
+                    </p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            اختبار الاختراق
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            مراقبة مستمرة
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            استجابة للحوادث
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 border border-cyan-500/30 rounded-lg hover:border-cyan-400 transition-all duration-300">
+                        <span>تفاصيل الخدمة</span>
+                    </button>
+                </div>
+                
+                <!-- الخدمة 6: الأكاديمية المتكاملة -->
+                <div class="service-card p-8">
+                    <div class="academy-animation mx-auto mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">الأكاديمية المتكاملة</h3>
+                    <p class="text-gray-300 mb-6">
+                        برامج تدريبية متخصصة في الأمن السيبراني والتقنية مع شهادات معتمدة
+                    </p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            دورات متخصصة
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            شهادات معتمدة
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            تدريب عملي
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 border border-cyan-500/30 rounded-lg hover:border-cyan-400 transition-all duration-300">
+                        <span>تفاصيل الخدمة</span>
+                    </button>
+                </div>
+                
+                <!-- الخدمة 7: إدارة وحماية الحسابات -->
+                <div class="service-card p-8">
+                    <div class="accounts-animation mx-auto mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">إدارة وحماية الحسابات</h3>
+                    <p class="text-gray-300 mb-6">
+                        إدارة متكاملة لحسابات الموظفين والعملاء مع أنظمة حماية متقدمة
+                    </p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            إدارة الصلاحيات
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            المصادقة الثنائية
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            مراقبة الأنشطة
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 border border-cyan-500/30 rounded-lg hover:border-cyan-400 transition-all duration-300">
+                        <span>تفاصيل الخدمة</span>
+                    </button>
+                </div>
+                
+                <!-- الخدمة 8: مواقع التواصل الاجتماعي -->
+                <div class="service-card p-8">
+                    <div class="social-animation mx-auto mb-6">
+                        <div class="social-icon">📸</div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">مواقع التواصل الاجتماعي</h3>
+                    <p class="text-gray-300 mb-6">
+                        إدارة وحماية حسابات التواصل الاجتماعي وإنشاء حملات تسويقية فعالة
+                    </p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            إدارة الحسابات
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            حماية من الاختراق
+                        </li>
+                        <li class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-check text-green-400 ml-2"></i>
+                            حملات تسويقية
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 border border-cyan-500/30 rounded-lg hover:border-cyan-400 transition-all duration-300">
+                        <span>تفاصيل الخدمة</span>
+                    </button>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+    
+    <!-- قسم كيف نعمل -->
+    <section class="relative z-10 py-20 bg-gradient-to-t from-cyan-900/10 to-transparent">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-black gradient-text mb-6">
+                    كيف <span class="cyber-glow">نعمل</span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    منهجية عمل واضحة تضمن جودة الخدمة وسرية المعلومات
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-cyan-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center">
+                        <span class="text-2xl font-bold gradient-text">1</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">التحليل</h3>
+                    <p class="text-gray-400">نحلل احتياجاتك بدقة لنفهم التحديات والفرص</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-cyan-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center">
+                        <span class="text-2xl font-bold gradient-text">2</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">التصميم</h3>
+                    <p class="text-gray-400">نصمم الحلول المناسبة بأعلى معايير الأمان</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-cyan-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center">
+                        <span class="text-2xl font-bold gradient-text">3</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">التنفيذ</h3>
+                    <p class="text-gray-400">ننفذ الحلول بفريق متخصص وتقنيات متطورة</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-cyan-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center">
+                        <span class="text-2xl font-bold gradient-text">4</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">الدعم</h3>
+                    <p class="text-gray-400">ندعمك بعد التسليم بفريق متخصص 24/7</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- قسم الإحصائيات -->
+    <section class="relative z-10 py-20">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="text-5xl font-black gradient-text mb-3" data-count="500">0</div>
+                    <p class="text-gray-400">مشروع ناجح</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="text-5xl font-black gradient-text mb-3" data-count="99">0</div>
+                    <p class="text-gray-400">رضا العملاء %</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="text-5xl font-black gradient-text mb-3" data-count="50">0</div>
+                    <p class="text-gray-400">خبير تقني</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="text-5xl font-black gradient-text mb-3" data-count="24">0</div>
+                    <p class="text-gray-400">دعم على مدار الساعة</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- قسم اتصل بنا -->
+    <section id="contact" class="relative z-10 py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-black gradient-text mb-6">
+                    مستعدون <span class="cyber-glow">لخدمتك</span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    تواصل معنا الآن وابدأ رحلتك نحو الأمان الرقمي الكامل
+                </p>
+            </div>
+            
+            <div class="max-w-2xl mx-auto">
+                <form class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <input type="text" placeholder="الاسم الكامل" class="w-full bg-gray-900/50 border border-cyan-500/30 rounded-xl p-4 focus:outline-none focus:border-cyan-400">
+                        <input type="email" placeholder="البريد الإلكتروني" class="w-full bg-gray-900/50 border border-cyan-500/30 rounded-xl p-4 focus:outline-none focus:border-cyan-400">
+                    </div>
+                    
+                    <select class="w-full bg-gray-900/50 border border-cyan-500/30 rounded-xl p-4 focus:outline-none focus:border-cyan-400">
+                        <option value="">اختر الخدمة المطلوبة</option>
+                        <option value="web">تطوير تطبيقات الويب</option>
+                        <option value="hosting">الاستضافة والحماية</option>
+                        <option value="cloud">الحلول السحابية</option>
+                        <option value="network">الشبكات</option>
+                        <option value="security">الأمن السيبراني</option>
+                        <option value="academy">الأكاديمية</option>
+                        <option value="accounts">إدارة الحسابات</option>
+                        <option value="social">مواقع التواصل</option>
+                    </select>
+                    
+                    <textarea placeholder="الرسالة" rows="5" class="w-full bg-gray-900/50 border border-cyan-500/30 rounded-xl p-4 focus:outline-none focus:border-cyan-400"></textarea>
+                    
+                    <button type="submit" class="cyber-button w-full text-lg py-4">
+                        <span>إرسال الطلب</span>
+                        <i class="fas fa-paper-plane ml-3"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- الفوتر -->
+    <footer class="relative z-10 pt-12 pb-6 border-t border-cyan-500/20">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center space-x-3 space-x-reverse">
+                        <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-xl"></div>
+                        <div>
+                            <h3 class="text-xl font-bold gradient-text">X CYBER</h3>
+                            <p class="text-sm text-cyan-400">حماة الفضاء الإلكتروني</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-6 space-x-reverse">
+                    <a href="#" class="text-gray-400 hover:text-cyan-400 transition-all duration-300">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-cyan-400 transition-all duration-300">
+                        <i class="fab fa-linkedin text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-cyan-400 transition-all duration-300">
+                        <i class="fab fa-youtube text-xl"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-cyan-500/20 text-center">
+                <p class="text-gray-500">
+                    © 2024 X Cyber. جميع الحقوق محفوظة | 
+                    <span class="text-cyan-400">أمانك الرقمي هو أولويتنا</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script>
+        // مطر المصفوفة
+        function createMatrixRain() {
+            const matrixContainer = document.getElementById('matrixRain');
+            const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            
+            for (let i = 0; i < 50; i++) {
+                const char = document.createElement('div');
+                char.className = 'absolute text-green-400 font-mono';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.fontSize = Math.random() * 12 + 10 + 'px';
+                char.style.animation = `matrixRain ${Math.random() * 10 + 5}s linear infinite`;
+                char.style.animationDelay = Math.random() * 10 + 's';
+                matrixContainer.appendChild(char);
+            }
+        }
+        
+        // إضافة keyframe للمطر المصفوفي
+        const styleSheet = document.styleSheets[0];
+        styleSheet.insertRule(`
+            @keyframes matrixRain {
+                0% { transform: translateY(-100vh); opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { transform: translateY(100vh); opacity: 0; }
+            }
+        `, styleSheet.cssRules.length);
+        
+        // عداد الإحصائيات
+        function startCounters() {
+            const counters = document.querySelectorAll('[data-count]');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-count'));
+                const increment = target / 100;
+                let current = 0;
+                
+                const updateCounter = () => {
+                    if (current < target) {
+                        current += increment;
+                        counter.textContent = Math.floor(current);
+                        setTimeout(updateCounter, 20);
+                    } else {
+                        counter.textContent = target;
+                    }
+                };
+                
+                updateCounter();
+            });
+        }
+        
+        // تأثيرات عند التمرير
+        function initScrollAnimations() {
+            const serviceCards = document.querySelectorAll('.service-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            serviceCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(50px)';
+                card.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                observer.observe(card);
+            });
+        }
+        
+        // تهيئة كل شيء
+        document.addEventListener('DOMContentLoaded', () => {
+            createMatrixRain();
+            initScrollAnimations();
+            
+            // بدء العدادات عند التمرير للقسم
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        startCounters();
+                        statsObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            const statsSection = document.querySelector('section:nth-of-type(5)');
+            if (statsSection) statsObserver.observe(statsSection);
+            
+            // تأثيرات الأزرار
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', () => {
+                    button.style.transform = 'translateY(-5px)';
+                });
+                
+                button.addEventListener('mouseleave', () => {
+                    button.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // تأثيرات القوائم
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    link.style.transform = 'translateY(-2px)';
+                });
+                
+                link.addEventListener('mouseleave', () => {
+                    link.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // التمرير السلس
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+        
+        // تأثيرات إضافية للخدمات
+        const serviceCards = document.querySelectorAll('.service-card');
+        serviceCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const animation = card.querySelector('div[class*="animation"]');
+                if (animation) {
+                    animation.style.transform = 'scale(1.1)';
+                }
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                const animation = card.querySelector('div[class*="animation"]');
+                if (animation) {
+                    animation.style.transform = 'scale(1)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X Cyber - لوحة التحكم</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --primary-red: #ff3333;
+            --primary-green: #00cc66;
+            --primary-purple: #9933ff;
+            --dark-bg: #0a0a1a;
+            --card-bg: rgba(20, 30, 48, 0.9);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background: var(--dark-bg);
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        /* تدرجات الألوان */
+        .gradient-text-blue {
+            background: linear-gradient(135deg, var(--primary-blue), #3399ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gradient-text-red {
+            background: linear-gradient(135deg, var(--primary-red), #ff6666);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gradient-text-green {
+            background: linear-gradient(135deg, var(--primary-green), #66ff99);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gradient-text-purple {
+            background: linear-gradient(135deg, var(--primary-purple), #cc99ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* بطاقات الخدمات */
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 102, 204, 0.2);
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0, 102, 204, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .service-card:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-blue);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* أزرار التفاعل */
+        .primary-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 102, 204, 0.3);
+        }
+        
+        /* أزرار الإجراءات */
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .edit-btn {
+            background: rgba(0, 102, 204, 0.2);
+            color: var(--primary-blue);
+            border: 1px solid rgba(0, 102, 204, 0.3);
+        }
+        
+        .edit-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+        
+        .delete-btn {
+            background: rgba(255, 51, 51, 0.2);
+            color: var(--primary-red);
+            border: 1px solid rgba(255, 51, 51, 0.3);
+        }
+        
+        .delete-btn:hover {
+            background: var(--primary-red);
+            color: white;
+        }
+        
+        .view-btn {
+            background: rgba(0, 204, 102, 0.2);
+            color: var(--primary-green);
+            border: 1px solid rgba(0, 204, 102, 0.3);
+        }
+        
+        .view-btn:hover {
+            background: var(--primary-green);
+            color: white;
+        }
+        
+        /* شريط التنقل الجانبي */
+        .sidebar {
+            background: rgba(10, 15, 25, 0.95);
+            border-left: 1px solid rgba(0, 102, 204, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .sidebar-link {
+            padding: 12px 20px;
+            border-radius: 12px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #9ca3af;
+        }
+        
+        .sidebar-link:hover, .sidebar-link.active {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+        }
+        
+        /* النوافذ المنبثقة */
+        .modal {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* حقول الإدخال */
+        .form-input {
+            background: rgba(30, 40, 60, 0.5);
+            border: 1px solid rgba(0, 102, 204, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            width: 100%;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: #6b7280;
+        }
+        
+        /* البادجات */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-blue {
+            background: rgba(0, 102, 204, 0.2);
+            color: #3399ff;
+            border: 1px solid rgba(0, 102, 204, 0.3);
+        }
+        
+        .badge-red {
+            background: rgba(255, 51, 51, 0.2);
+            color: #ff6666;
+            border: 1px solid rgba(255, 51, 51, 0.3);
+        }
+        
+        .badge-green {
+            background: rgba(0, 204, 102, 0.2);
+            color: #66ff99;
+            border: 1px solid rgba(0, 204, 102, 0.3);
+        }
+        
+        .badge-purple {
+            background: rgba(153, 51, 255, 0.2);
+            color: #cc99ff;
+            border: 1px solid rgba(153, 51, 255, 0.3);
+        }
+        
+        /* تخصيص التمرير */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0f1a2d;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border-radius: 5px;
+        }
+        
+        /* الجداول */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 20px;
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 102, 204, 0.2);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: rgba(0, 102, 204, 0.1);
+            padding: 16px;
+            font-weight: 600;
+            color: var(--primary-blue);
+            text-align: right;
+        }
+        
+        td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(0, 102, 204, 0.1);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover td {
+            background: rgba(0, 102, 204, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="flex min-h-screen">
+        <!-- الشريط الجانبي -->
+        <div class="sidebar w-80 fixed h-full p-6">
+            <!-- الشعار -->
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-primary-blue to-primary-purple rounded-xl flex items-center justify-center">
+                    <i class="fas fa-crown text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold gradient-text-blue">X Cyber</h2>
+                    <p class="text-xs text-gray-400">لوحة التحكم</p>
+                </div>
+            </div>
+            
+            <!-- القائمة -->
+            <div class="space-y-2">
+                <a href="#" onclick="showDashboard('main')" class="sidebar-link active" id="link-main">
+                    <i class="fas fa-chart-pie w-6"></i>
+                    <span>الرئيسية</span>
+                </a>
+                <a href="#" onclick="showDashboard('services')" class="sidebar-link" id="link-services">
+                    <i class="fas fa-server w-6"></i>
+                    <span>الخدمات</span>
+                </a>
+                <a href="#" onclick="showDashboard('requests')" class="sidebar-link" id="link-requests">
+                    <i class="fas fa-file-alt w-6"></i>
+                    <span>طلبات العملاء</span>
+                </a>
+                <a href="#" onclick="showDashboard('categories')" class="sidebar-link" id="link-categories">
+                    <i class="fas fa-tags w-6"></i>
+                    <span>الفئات</span>
+                </a>
+                <a href="#" onclick="showDashboard('settings')" class="sidebar-link" id="link-settings">
+                    <i class="fas fa-cog w-6"></i>
+                    <span>الإعدادات</span>
+                </a>
+            </div>
+            
+            <!-- معلومات المستخدم -->
+            <div class="absolute bottom-6 right-6 left-6">
+                <div class="p-4 bg-primary-blue/10 rounded-xl border border-primary-blue/20">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-primary-purple/20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-primary-purple"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">مدير النظام</p>
+                            <p class="text-xs text-gray-400">admin@xcyber.com</p>
+                        </div>
+                        <button onclick="logout()" class="mr-auto text-gray-400 hover:text-primary-red">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- المحتوى الرئيسي -->
+        <div class="mr-80 flex-1 p-8">
+            <!-- الهيدر -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold mb-2" id="page-title">لوحة التحكم الرئيسية</h1>
+                    <p class="text-gray-400" id="page-subtitle">نظرة عامة على النظام وإحصائيات الخدمات</p>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button onclick="openAddModal()" class="primary-btn flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
+                        <span>إضافة خدمة جديدة</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- الرئيسية -->
+            <div id="main-dashboard" class="dashboard-section">
+                <!-- البطاقات الإحصائية -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="service-card p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-primary-blue/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-server text-primary-blue text-xl"></i>
+                            </div>
+                            <span class="badge badge-blue">إجمالي</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-1" id="total-services">0</h3>
+                        <p class="text-gray-400">إجمالي الخدمات</p>
+                    </div>
+                    
+                    <div class="service-card p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-primary-green/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-file-alt text-primary-green text-xl"></i>
+                            </div>
+                            <span class="badge badge-green">جديدة</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-1" id="total-requests">0</h3>
+                        <p class="text-gray-400">طلبات العملاء</p>
+                    </div>
+                    
+                    <div class="service-card p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-primary-purple/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-tags text-primary-purple text-xl"></i>
+                            </div>
+                            <span class="badge badge-purple">فئات</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-1" id="total-categories">0</h3>
+                        <p class="text-gray-400">فئات الخدمات</p>
+                    </div>
+                    
+                    <div class="service-card p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-primary-red/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-users text-primary-red text-xl"></i>
+                            </div>
+                            <span class="badge badge-red">نشط</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-1" id="total-active">0</h3>
+                        <p class="text-gray-400">خدمات نشطة</p>
+                    </div>
+                </div>
+                
+                <!-- توزيع الخدمات -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="service-card p-6">
+                        <h3 class="text-xl font-bold mb-4 gradient-text-blue">توزيع الخدمات حسب الفئة</h3>
+                        <div id="category-chart" class="space-y-4">
+                            <!-- سيتم ملؤها ديناميكياً -->
+                        </div>
+                    </div>
+                    
+                    <div class="service-card p-6">
+                        <h3 class="text-xl font-bold mb-4 gradient-text-green">آخر الطلبات</h3>
+                        <div id="recent-requests" class="space-y-4">
+                            <!-- سيتم ملؤها ديناميكياً -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- الخدمات الأكثر طلباً -->
+                <div class="service-card p-6">
+                    <h3 class="text-xl font-bold mb-4 gradient-text-purple">الخدمات الأكثر طلباً</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>الخدمة</th>
+                                    <th>الفئة</th>
+                                    <th>عدد الطلبات</th>
+                                    <th>الشهرية</th>
+                                </tr>
+                            </thead>
+                            <tbody id="popular-services">
+                                <tr>
+                                    <td colspan="4" class="text-center text-gray-400 py-8">
+                                        لا توجد بيانات كافية
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- إدارة الخدمات -->
+            <div id="services-dashboard" class="dashboard-section hidden">
+                <!-- فلاتر البحث -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="relative">
+                        <i class="fas fa-search absolute right-4 top-4 text-gray-500"></i>
+                        <input type="text" id="service-search" placeholder="بحث عن خدمة..." 
+                               class="form-input pr-12" onkeyup="filterServices()">
+                    </div>
+                    
+                    <select id="category-filter" class="form-input" onchange="filterServices()">
+                        <option value="">جميع الفئات</option>
+                        <option value="hosting">خدمات الاستضافة</option>
+                        <option value="security">خدمات الحماية</option>
+                        <option value="storage">التخزين السحابي</option>
+                        <option value="additional">خدمات إضافية</option>
+                    </select>
+                    
+                    <select id="status-filter" class="form-input" onchange="filterServices()">
+                        <option value="">جميع الحالات</option>
+                        <option value="active">نشط</option>
+                        <option value="inactive">غير نشط</option>
+                    </select>
+                    
+                    <button onclick="resetFilters()" class="px-4 py-3 bg-gray-700 rounded-xl hover:bg-gray-600">
+                        <i class="fas fa-redo-alt ml-2"></i>
+                        إعادة تعيين
+                    </button>
+                </div>
+                
+                <!-- جدول الخدمات -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الخدمة</th>
+                                <th>الفئة</th>
+                                <th>السعر</th>
+                                <th>الحالة</th>
+                                <th>المميزات</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="services-table-body">
+                            <!-- سيتم ملؤها ديناميكياً -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- طلبات العملاء -->
+            <div id="requests-dashboard" class="dashboard-section hidden">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>العميل</th>
+                                <th>البريد</th>
+                                <th>الهاتف</th>
+                                <th>الخدمة المطلوبة</th>
+                                <th>التاريخ</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requests-table-body">
+                            <!-- سيتم ملؤها ديناميكياً -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- إدارة الفئات -->
+            <div id="categories-dashboard" class="dashboard-section hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- قائمة الفئات -->
+                    <div class="lg:col-span-2">
+                        <div class="service-card p-6">
+                            <h3 class="text-xl font-bold mb-4 gradient-text-blue">الفئات الحالية</h3>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>اسم الفئة</th>
+                                            <th>الرمز</th>
+                                            <th>عدد الخدمات</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="categories-table-body">
+                                        <!-- سيتم ملؤها ديناميكياً -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- إضافة فئة جديدة -->
+                    <div>
+                        <div class="service-card p-6">
+                            <h3 class="text-xl font-bold mb-4 gradient-text-green">إضافة فئة جديدة</h3>
+                            <form onsubmit="addCategory(event)" class="space-y-4">
+                                <div>
+                                    <label class="block mb-2 text-sm">اسم الفئة</label>
+                                    <input type="text" id="category-name" required 
+                                           class="form-input" placeholder="مثال: خدمات الاستضافة">
+                                </div>
+                                
+                                <div>
+                                    <label class="block mb-2 text-sm">الرمز</label>
+                                    <input type="text" id="category-key" required 
+                                           class="form-input" placeholder="مثال: hosting">
+                                </div>
+                                
+                                <div>
+                                    <label class="block mb-2 text-sm">اللون</label>
+                                    <select id="category-color" class="form-input">
+                                        <option value="blue">أزرق</option>
+                                        <option value="red">أحمر</option>
+                                        <option value="green">أخضر</option>
+                                        <option value="purple">بنفسجي</option>
+                                    </select>
+                                </div>
+                                
+                                <button type="submit" class="primary-btn w-full">
+                                    <i class="fas fa-plus ml-2"></i>
+                                    إضافة الفئة
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- الإعدادات -->
+            <div id="settings-dashboard" class="dashboard-section hidden">
+                <div class="service-card p-6 max-w-2xl">
+                    <h3 class="text-xl font-bold mb-4 gradient-text-blue">إعدادات النظام</h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block mb-2">اسم الشركة</label>
+                            <input type="text" class="form-input" value="X Cyber Hosting">
+                        </div>
+                        
+                        <div>
+                            <label class="block mb-2">البريد الإلكتروني</label>
+                            <input type="email" class="form-input" value="admin@xcyber.com">
+                        </div>
+                        
+                        <div>
+                            <label class="block mb-2">رقم الهاتف</label>
+                            <input type="text" class="form-input" value="+966 12 345 6789">
+                        </div>
+                        
+                        <div class="flex items-center gap-4">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="form-checkbox">
+                                <span>تفعيل وضع الصيانة</span>
+                            </label>
+                            
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="form-checkbox">
+                                <span>إظهار الأسعار للزوار</span>
+                            </label>
+                        </div>
+                        
+                        <button class="primary-btn">
+                            <i class="fas fa-save ml-2"></i>
+                            حفظ الإعدادات
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- نافذة إضافة/تعديل خدمة -->
+    <div id="service-modal" class="modal fixed inset-0 hidden items-center justify-center z-50 p-4">
+        <div class="service-card max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-2xl font-bold gradient-text-blue" id="modal-title">إضافة خدمة جديدة</h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="service-form" onsubmit="saveService(event)" class="space-y-4">
+                    <input type="hidden" id="service-id">
+                    
+                    <div>
+                        <label class="block mb-2">اسم الخدمة *</label>
+                        <input type="text" id="service-name" required class="form-input">
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2">الفئة *</label>
+                        <select id="service-category" required class="form-input">
+                            <option value="">اختر الفئة</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2">الوصف *</label>
+                        <textarea id="service-description" required rows="3" class="form-input"></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-2">السعر *</label>
+                            <input type="text" id="service-price" required class="form-input" placeholder="مثال: 49 ريال/شهر">
+                        </div>
+                        
+                        <div>
+                            <label class="block mb-2">مدة التنفيذ</label>
+                            <input type="text" id="service-time" class="form-input" placeholder="مثال: 24 ساعة">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2">المميزات (مفصولة بفاصلة) *</label>
+                        <input type="text" id="service-features" required class="form-input" 
+                               placeholder="مثال: مساحة 10GB, دعم PHP, قاعدة بيانات">
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2">ضمان التوافر</label>
+                        <input type="text" id="service-sla" class="form-input" placeholder="مثال: 99.9%">
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" id="service-status" class="form-checkbox" checked>
+                            <span>نشط</span>
+                        </label>
+                        
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" id="service-popular" class="form-checkbox">
+                            <span>خدمة مميزة</span>
+                        </label>
+                    </div>
+                    
+                    <div class="flex gap-4 pt-4">
+                        <button type="submit" class="primary-btn flex-1">
+                            <i class="fas fa-save ml-2"></i>
+                            حفظ الخدمة
+                        </button>
+                        
+                        <button type="button" onclick="closeModal()" class="flex-1 px-6 py-3 bg-gray-700 rounded-xl hover:bg-gray-600">
+                            إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- نافذة تأكيد الحذف -->
+    <div id="delete-modal" class="modal fixed inset-0 hidden items-center justify-center z-50 p-4">
+        <div class="service-card max-w-md w-full">
+            <div class="p-8 text-center">
+                <div class="w-20 h-20 mx-auto mb-4 bg-red-500/20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-4xl text-red-500"></i>
+                </div>
+                
+                <h3 class="text-2xl font-bold mb-2">تأكيد الحذف</h3>
+                <p class="text-gray-400 mb-6" id="delete-message">هل أنت متأكد من حذف هذه الخدمة؟</p>
+                
+                <input type="hidden" id="delete-id">
+                <input type="hidden" id="delete-type">
+                
+                <div class="flex gap-4">
+                    <button onclick="confirmDelete()" class="flex-1 px-6 py-3 bg-red-600 rounded-xl hover:bg-red-700">
+                        <i class="fas fa-trash ml-2"></i>
+                        حذف
+                    </button>
+                    
+                    <button onclick="closeDeleteModal()" class="flex-1 px-6 py-3 bg-gray-700 rounded-xl hover:bg-gray-600">
+                        إلغاء
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =====================================================
+        // البيانات الافتراضية
+        // =====================================================
+        let services = [
+            {
+                id: 1,
+                name: 'استضافة مواقع مشتركة',
+                category: 'hosting',
+                description: 'حل استضافة مثالي للمواقع الشخصية والصغيرة',
+                price: '49 ريال/شهر',
+                setupTime: '24 ساعة',
+                features: ['مساحة 10GB', 'نقل 100GB/شهر', '5 قواعد بيانات'],
+                sla: '99.9%',
+                status: 'active',
+                popular: true
+            },
+            {
+                id: 2,
+                name: 'استضافة VPS مخصصة',
+                category: 'hosting',
+                description: 'خوادم افتراضية مخصصة مع موارد مضمونة',
+                price: '199 ريال/شهر',
+                setupTime: '4 ساعات',
+                features: ['2 Core vCPU', '4GB RAM', '80GB SSD'],
+                sla: '99.99%',
+                status: 'active',
+                popular: true
+            },
+            {
+                id: 3,
+                name: 'جدار حماية متقدم',
+                category: 'security',
+                description: 'جدار حماية تطبيقات ويب متقدم',
+                price: '99 ريال/شهر',
+                setupTime: '6 ساعات',
+                features: ['حماية SQL Injection', 'حماية XSS', 'سجلات تفصيلية'],
+                sla: '100%',
+                status: 'active',
+                popular: false
+            }
+        ];
+        
+        let categories = [
+            { id: 1, name: 'خدمات الاستضافة', key: 'hosting', color: 'blue', count: 2 },
+            { id: 2, name: 'خدمات الحماية', key: 'security', color: 'red', count: 1 },
+            { id: 3, name: 'التخزين السحابي', key: 'storage', color: 'green', count: 0 },
+            { id: 4, name: 'خدمات إضافية', key: 'additional', color: 'purple', count: 0 }
+        ];
+        
+        let requests = [
+            {
+                id: 1,
+                customer: 'أحمد محمد',
+                email: 'ahmed@example.com',
+                phone: '0555555555',
+                service: 'استضافة VPS مخصصة',
+                date: '2024-01-15',
+                status: 'جديد'
+            },
+            {
+                id: 2,
+                customer: 'سارة علي',
+                email: 'sara@example.com',
+                phone: '0566666666',
+                service: 'جدار حماية متقدم',
+                date: '2024-01-14',
+                status: 'قيد المراجعة'
+            }
+        ];
+        
+        // =====================================================
+        // تهيئة الصفحة
+        // =====================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            renderServices();
+            renderRequests();
+            renderCategories();
+            updateCategorySelect();
+            renderCategoryChart();
+            renderRecentRequests();
+            renderPopularServices();
+        });
+        
+        // =====================================================
+        // التنقل بين الأقسام
+        // =====================================================
+        function showDashboard(section) {
+            // إخفاء جميع الأقسام
+            document.querySelectorAll('.dashboard-section').forEach(el => {
+                el.classList.add('hidden');
+            });
+            
+            // إظهار القسم المطلوب
+            document.getElementById(`${section}-dashboard`).classList.remove('hidden');
+            
+            // تحديث الرابط النشط
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.getElementById(`link-${section}`).classList.add('active');
+            
+            // تحديث عنوان الصفحة
+            const titles = {
+                'main': { title: 'لوحة التحكم الرئيسية', subtitle: 'نظرة عامة على النظام وإحصائيات الخدمات' },
+                'services': { title: 'إدارة الخدمات', subtitle: 'إضافة وتعديل وحذف الخدمات' },
+                'requests': { title: 'طلبات العملاء', subtitle: 'إدارة طلبات الخدمات الواردة' },
+                'categories': { title: 'إدارة الفئات', subtitle: 'تنظيم فئات الخدمات' },
+                'settings': { title: 'الإعدادات', subtitle: 'تخصيص إعدادات النظام' }
+            };
+            
+            document.getElementById('page-title').textContent = titles[section].title;
+            document.getElementById('page-subtitle').textContent = titles[section].subtitle;
+        }
+        
+        // =====================================================
+        // تحديث الإحصائيات
+        // =====================================================
+        function updateStats() {
+            document.getElementById('total-services').textContent = services.length;
+            document.getElementById('total-requests').textContent = requests.length;
+            document.getElementById('total-categories').textContent = categories.length;
+            document.getElementById('total-active').textContent = services.filter(s => s.status === 'active').length;
+            
+            // تحديث عدد الخدمات في كل فئة
+            categories.forEach(cat => {
+                cat.count = services.filter(s => s.category === cat.key).length;
+            });
+        }
+        
+        // =====================================================
+        // رسم بياني توزيع الفئات
+        // =====================================================
+        function renderCategoryChart() {
+            const chart = document.getElementById('category-chart');
+            chart.innerHTML = '';
+            
+            categories.forEach(cat => {
+                const percentage = services.length ? Math.round((cat.count / services.length) * 100) : 0;
+                
+                chart.innerHTML += `
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span>${cat.name}</span>
+                            <span class="text-${cat.color}-400">${cat.count} خدمة (${percentage}%)</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="bg-${cat.color}-500 h-2 rounded-full" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        // =====================================================
+        // عرض آخر الطلبات
+        // =====================================================
+        function renderRecentRequests() {
+            const container = document.getElementById('recent-requests');
+            
+            if (requests.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-center py-4">لا توجد طلبات حديثة</p>';
+                return;
+            }
+            
+            const recent = requests.slice(-3).reverse();
+            container.innerHTML = recent.map(req => `
+                <div class="flex items-center justify-between p-4 bg-gray-900/50 rounded-xl">
+                    <div>
+                        <p class="font-bold">${req.customer}</p>
+                        <p class="text-sm text-gray-400">${req.service}</p>
+                    </div>
+                    <span class="badge badge-blue">${req.status}</span>
+                </div>
+            `).join('');
+        }
+        
+        // =====================================================
+        // عرض الخدمات الأكثر طلباً
+        // =====================================================
+        function renderPopularServices() {
+            const tbody = document.getElementById('popular-services');
+            
+            // محاكاة إحصائيات الطلبات
+            const popular = services.filter(s => s.popular).map(s => ({
+                name: s.name,
+                category: categories.find(c => c.key === s.category)?.name || s.category,
+                requests: Math.floor(Math.random() * 50) + 10,
+                revenue: Math.floor(Math.random() * 5000) + 1000
+            })).sort((a, b) => b.requests - a.requests);
+            
+            if (popular.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-400 py-8">لا توجد بيانات كافية</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = popular.map(s => `
+                <tr>
+                    <td>${s.name}</td>
+                    <td>${s.category}</td>
+                    <td>${s.requests} طلب</td>
+                    <td>${s.revenue} ريال</td>
+                </tr>
+            `).join('');
+        }
+        
+        // =====================================================
+        // عرض الخدمات في الجدول
+        // =====================================================
+        function renderServices(filteredServices = null) {
+            const tbody = document.getElementById('services-table-body');
+            const servicesToShow = filteredServices || services;
+            
+            if (servicesToShow.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-gray-400 py-8">لا توجد خدمات لعرضها</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = servicesToShow.map((service, index) => {
+                const category = categories.find(c => c.key === service.category);
+                const categoryName = category ? category.name : service.category;
+                const categoryColor = category ? category.color : 'blue';
+                
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>
+                            <div class="font-bold">${service.name}</div>
+                            <div class="text-sm text-gray-400">${service.description.substring(0, 30)}...</div>
+                        </td>
+                        <td>
+                            <span class="badge badge-${categoryColor}">${categoryName}</span>
+                        </td>
+                        <td>${service.price}</td>
+                        <td>
+                            <span class="badge ${service.status === 'active' ? 'badge-green' : 'badge-red'}">
+                                ${service.status === 'active' ? 'نشط' : 'غير نشط'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="flex flex-wrap gap-1">
+                                ${service.features.slice(0, 2).map(f => `
+                                    <span class="badge badge-blue text-xs">${f}</span>
+                                `).join('')}
+                                ${service.features.length > 2 ? `<span class="badge badge-blue text-xs">+${service.features.length - 2}</span>` : ''}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex gap-2">
+                                <button onclick="editService(${service.id})" class="action-btn edit-btn" title="تعديل">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="viewService(${service.id})" class="action-btn view-btn" title="عرض">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button onclick="openDeleteModal(${service.id}, 'service')" class="action-btn delete-btn" title="حذف">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // =====================================================
+        // عرض طلبات العملاء
+        // =====================================================
+        function renderRequests() {
+            const tbody = document.getElementById('requests-table-body');
+            
+            if (requests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-gray-400 py-8">لا توجد طلبات لعرضها</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = requests.map((req, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${req.customer}</td>
+                    <td>${req.email}</td>
+                    <td>${req.phone}</td>
+                    <td>${req.service}</td>
+                    <td>${req.date}</td>
+                    <td>
+                        <span class="badge ${req.status === 'جديد' ? 'badge-green' : 'badge-blue'}">
+                            ${req.status}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="flex gap-2">
+                            <button onclick="viewRequest(${req.id})" class="action-btn view-btn" title="عرض">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="updateRequestStatus(${req.id})" class="action-btn edit-btn" title="تحديث الحالة">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // =====================================================
+        // عرض الفئات
+        // =====================================================
+        function renderCategories() {
+            const tbody = document.getElementById('categories-table-body');
+            
+            if (categories.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-400 py-8">لا توجد فئات لعرضها</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = categories.map((cat, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${cat.name}</td>
+                    <td><span class="badge badge-${cat.color}">${cat.key}</span></td>
+                    <td>${cat.count}</td>
+                    <td>
+                        <div class="flex gap-2">
+                            <button onclick="editCategory(${cat.id})" class="action-btn edit-btn" title="تعديل">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="openDeleteModal(${cat.id}, 'category')" class="action-btn delete-btn" title="حذف">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // =====================================================
+        // تحديث قائمة الفئات في النموذج
+        // =====================================================
+        function updateCategorySelect() {
+            const select = document.getElementById('service-category');
+            select.innerHTML = '<option value="">اختر الفئة</option>' + 
+                categories.map(cat => `<option value="${cat.key}">${cat.name}</option>`).join('');
+        }
+        
+        // =====================================================
+        // فلترة الخدمات
+        // =====================================================
+        function filterServices() {
+            const searchTerm = document.getElementById('service-search').value.toLowerCase();
+            const categoryFilter = document.getElementById('category-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            
+            const filtered = services.filter(service => {
+                // فلترة حسب البحث
+                const matchesSearch = service.name.toLowerCase().includes(searchTerm) ||
+                                     service.description.toLowerCase().includes(searchTerm);
+                
+                // فلترة حسب الفئة
+                const matchesCategory = !categoryFilter || service.category === categoryFilter;
+                
+                // فلترة حسب الحالة
+                const matchesStatus = !statusFilter || service.status === statusFilter;
+                
+                return matchesSearch && matchesCategory && matchesStatus;
+            });
+            
+            renderServices(filtered);
+        }
+        
+        // =====================================================
+        // إعادة تعيين الفلاتر
+        // =====================================================
+        function resetFilters() {
+            document.getElementById('service-search').value = '';
+            document.getElementById('category-filter').value = '';
+            document.getElementById('status-filter').value = '';
+            renderServices();
+        }
+        
+        // =====================================================
+        // إضافة/تعديل خدمة
+        // =====================================================
+        function openAddModal() {
+            document.getElementById('modal-title').textContent = 'إضافة خدمة جديدة';
+            document.getElementById('service-id').value = '';
+            document.getElementById('service-name').value = '';
+            document.getElementById('service-category').value = '';
+            document.getElementById('service-description').value = '';
+            document.getElementById('service-price').value = '';
+            document.getElementById('service-time').value = '';
+            document.getElementById('service-features').value = '';
+            document.getElementById('service-sla').value = '';
+            document.getElementById('service-status').checked = true;
+            document.getElementById('service-popular').checked = false;
+            
+            document.getElementById('service-modal').classList.remove('hidden');
+            document.getElementById('service-modal').classList.add('flex');
+        }
+        
+        function editService(id) {
+            const service = services.find(s => s.id === id);
+            if (!service) return;
+            
+            document.getElementById('modal-title').textContent = 'تعديل الخدمة';
+            document.getElementById('service-id').value = service.id;
+            document.getElementById('service-name').value = service.name;
+            document.getElementById('service-category').value = service.category;
+            document.getElementById('service-description').value = service.description;
+            document.getElementById('service-price').value = service.price;
+            document.getElementById('service-time').value = service.setupTime || '';
+            document.getElementById('service-features').value = service.features.join(', ');
+            document.getElementById('service-sla').value = service.sla || '';
+            document.getElementById('service-status').checked = service.status === 'active';
+            document.getElementById('service-popular').checked = service.popular || false;
+            
+            document.getElementById('service-modal').classList.remove('hidden');
+            document.getElementById('service-modal').classList.add('flex');
+        }
+        
+        function saveService(event) {
+            event.preventDefault();
+            
+            const id = document.getElementById('service-id').value;
+            const serviceData = {
+                name: document.getElementById('service-name').value,
+                category: document.getElementById('service-category').value,
+                description: document.getElementById('service-description').value,
+                price: document.getElementById('service-price').value,
+                setupTime: document.getElementById('service-time').value,
+                features: document.getElementById('service-features').value.split(',').map(f => f.trim()),
+                sla: document.getElementById('service-sla').value,
+                status: document.getElementById('service-status').checked ? 'active' : 'inactive',
+                popular: document.getElementById('service-popular').checked
+            };
+            
+            if (id) {
+                // تعديل خدمة موجودة
+                const index = services.findIndex(s => s.id == id);
+                if (index !== -1) {
+                    services[index] = { ...services[index], ...serviceData };
+                }
+            } else {
+                // إضافة خدمة جديدة
+                const newId = Math.max(...services.map(s => s.id), 0) + 1;
+                services.push({ id: newId, ...serviceData });
+            }
+            
+            closeModal();
+            updateStats();
+            renderServices();
+            renderCategoryChart();
+            renderPopularServices();
+            
+            // تحديث عدد الخدمات في الفئات
+            categories.forEach(cat => {
+                cat.count = services.filter(s => s.category === cat.key).length;
+            });
+            renderCategories();
+        }
+        
+        // =====================================================
+        // عرض تفاصيل الخدمة
+        // =====================================================
+        function viewService(id) {
+            const service = services.find(s => s.id === id);
+            if (!service) return;
+            
+            alert(`عرض تفاصيل الخدمة: ${service.name}\n\n${service.description}\n\nالمميزات:\n- ${service.features.join('\n- ')}`);
+        }
+        
+        // =====================================================
+        // عرض تفاصيل الطلب
+        // =====================================================
+        function viewRequest(id) {
+            const request = requests.find(r => r.id === id);
+            if (!request) return;
+            
+            alert(`تفاصيل الطلب:\n\nالعميل: ${request.customer}\nالبريد: ${request.email}\nالهاتف: ${request.phone}\nالخدمة: ${request.service}\nالتاريخ: ${request.date}\nالحالة: ${request.status}`);
+        }
+        
+        // =====================================================
+        // تحديث حالة الطلب
+        // =====================================================
+        function updateRequestStatus(id) {
+            const request = requests.find(r => r.id === id);
+            if (!request) return;
+            
+            const statuses = ['جديد', 'قيد المراجعة', 'مقبول', 'مرفوض', 'مكتمل'];
+            const currentIndex = statuses.indexOf(request.status);
+            const nextIndex = (currentIndex + 1) % statuses.length;
+            
+            request.status = statuses[nextIndex];
+            renderRequests();
+        }
+        
+        // =====================================================
+        // إضافة فئة
+        // =====================================================
+        function addCategory(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('category-name').value;
+            const key = document.getElementById('category-key').value;
+            const color = document.getElementById('category-color').value;
+            
+            const newId = Math.max(...categories.map(c => c.id), 0) + 1;
+            categories.push({
+                id: newId,
+                name: name,
+                key: key,
+                color: color,
+                count: 0
+            });
+            
+            document.getElementById('category-name').value = '';
+            document.getElementById('category-key').value = '';
+            
+            updateCategorySelect();
+            renderCategories();
+            updateStats();
+            
+            alert('تمت إضافة الفئة بنجاح');
+        }
+        
+        // =====================================================
+        // تعديل فئة
+        // =====================================================
+        function editCategory(id) {
+            const category = categories.find(c => c.id === id);
+            if (!category) return;
+            
+            const newName = prompt('أدخل اسم الفئة الجديد:', category.name);
+            if (newName) {
+                category.name = newName;
+                renderCategories();
+                updateCategorySelect();
+            }
+        }
+        
+        // =====================================================
+        // نوافذ التأكيد
+        // =====================================================
+        function openDeleteModal(id, type) {
+            document.getElementById('delete-id').value = id;
+            document.getElementById('delete-type').value = type;
+            
+            const messages = {
+                'service': 'هل أنت متأكد من حذف هذه الخدمة؟',
+                'category': 'هل أنت متأكد من حذف هذه الفئة؟'
+            };
+            
+            document.getElementById('delete-message').textContent = messages[type];
+            document.getElementById('delete-modal').classList.remove('hidden');
+            document.getElementById('delete-modal').classList.add('flex');
+        }
+        
+        function confirmDelete() {
+            const id = parseInt(document.getElementById('delete-id').value);
+            const type = document.getElementById('delete-type').value;
+            
+            if (type === 'service') {
+                services = services.filter(s => s.id !== id);
+                renderServices();
+            } else if (type === 'category') {
+                categories = categories.filter(c => c.id !== id);
+                renderCategories();
+                updateCategorySelect();
+            }
+            
+            updateStats();
+            renderCategoryChart();
+            renderPopularServices();
+            closeDeleteModal();
+        }
+        
+        function closeModal() {
+            document.getElementById('service-modal').classList.add('hidden');
+            document.getElementById('service-modal').classList.remove('flex');
+        }
+        
+        function closeDeleteModal() {
+            document.getElementById('delete-modal').classList.add('hidden');
+            document.getElementById('delete-modal').classList.remove('flex');
+        }
+        
+        // =====================================================
+        // تسجيل الخروج
+        // =====================================================
+        function logout() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // =====================================================
+        // حفظ البيانات في localStorage (اختياري)
+        // =====================================================
+        function saveToStorage() {
+            localStorage.setItem('xcyber_services', JSON.stringify(services));
+            localStorage.setItem('xcyber_categories', JSON.stringify(categories));
+            localStorage.setItem('xcyber_requests', JSON.stringify(requests));
+        }
+        
+        function loadFromStorage() {
+            const savedServices = localStorage.getItem('xcyber_services');
+            const savedCategories = localStorage.getItem('xcyber_categories');
+            const savedRequests = localStorage.getItem('xcyber_requests');
+            
+            if (savedServices) services = JSON.parse(savedServices);
+            if (savedCategories) categories = JSON.parse(savedCategories);
+            if (savedRequests) requests = JSON.parse(savedRequests);
+        }
+    </script>
+</body>
+</html>

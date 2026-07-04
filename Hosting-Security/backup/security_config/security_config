@@ -1,0 +1,95 @@
+📁 backup/security_config/
+├── 📁 daily/
+│   ├── 2024-01-15/
+│   │   ├── security-config.php.backup
+│   │   ├── permissions-config.php.backup
+│   │   ├── encryption-config.php.backup
+│   │   ├── firewall-rules.json
+│   │   ├── rate-limit-rules.json
+│   │   └── checksum.sha256
+│   │
+│   ├── 2024-01-14/
+│   │   └── ...
+│   │
+│   └── 2024-01-13/
+│       └── ...
+│
+├── 📁 weekly/
+│   ├── week_02_2024/
+│   │   ├── security-config.tar.gz
+│   │   ├── firewall-rules.tar.gz
+│   │   └── checksum.sha256
+│   │
+│   └── week_01_2024/
+│       └── ...
+│
+├── 📁 monthly/
+│   ├── 2024-01/
+│   │   ├── full-config-backup.tar.gz.enc
+│   │   └── verification.json
+│   │
+│   └── 2023-12/
+│       └── ...
+│
+└── 📁 version_control/
+    ├── security-config_v2.1.0.php
+    ├── security-config_v2.0.0.php
+    ├── security-config_v1.5.0.php
+    └── changelog.md
+
+
+    #!/bin/bash
+# backup/security_config/backup_config.sh
+
+CONFIG_DIR="/etc/hosting/security"
+BACKUP_DIR="/var/backup/security_config/daily/$(date +%Y-%m-%d)"
+ENCRYPTION_KEY="/etc/hosting/keys/backup.key"
+
+# إنشاء مجلد النسخ الاحتياطي
+mkdir -p "$BACKUP_DIR"
+
+# نسخ ملفات الإعدادات
+cp "$CONFIG_DIR/security-config.php" "$BACKUP_DIR/"
+cp "$CONFIG_DIR/permissions-config.php" "$BACKUP_DIR/"
+cp "$CONFIG_DIR/encryption-config.php" "$BACKUP_DIR/"
+cp "$CONFIG_DIR/firewall-rules.json" "$BACKUP_DIR/"
+cp "$CONFIG_DIR/rate-limit-rules.json" "$BACKUP_DIR/"
+
+# إنشاء نسخة من قاعدة بيانات الإعدادات
+mysqldump --host=localhost --user=config_backup --password=$(cat /etc/hosting/secrets/db_backup.password) \
+    hosting_config security_settings firewall_rules rate_limits > "$BACKUP_DIR/database_config.sql"
+
+# ضغط الملفات
+tar -czf "$BACKUP_DIR/security_config_$(date +%Y%m%d_%H%M%S).tar.gz" -C "$BACKUP_DIR" .
+
+# تشفير النسخة
+openssl enc -aes-256-gcm \
+    -in "$BACKUP_DIR/security_config_$(date +%Y%m%d_%H%M%S).tar.gz" \
+    -out "$BACKUP_DIR/security_config_$(date +%Y%m%d_%H%M%S).tar.gz.enc" \
+    -pass file:"$ENCRYPTION_KEY" \
+    -pbkdf2
+
+# حساب checksum
+sha256sum "$BACKUP_DIR/security_config_$(date +%Y%m%d_%H%M%S).tar.gz.enc" \
+    > "$BACKUP_DIR/checksum.sha256"
+
+# حذف الملفات غير المشفرة
+rm "$BACKUP_DIR"/*.php "$BACKUP_DIR"/*.json "$BACKUP_DIR"/*.sql "$BACKUP_DIR"/*.tar.gz
+
+# حفظ metadata
+echo "{
+  \"backup_date\": \"$(date +%Y-%m-%d)\",
+  \"backup_time\": \"$(date +%H:%M:%S)\",
+  \"config_version\": \"2.5.1\",
+  \"files\": [
+    \"security-config.php\",
+    \"permissions-config.php\", 
+    \"encryption-config.php\",
+    \"firewall-rules.json\",
+    \"rate-limit-rules.json\",
+    \"database_config.sql\"
+  ],
+  \"encryption\": \"aes-256-gcm\",
+  \"compression\": \"gzip\",
+  \"size\": \"$(du -h $BACKUP_DIR/*.enc | cut -f1)\"
+}" > "$BACKUP_DIR/metadata.json"

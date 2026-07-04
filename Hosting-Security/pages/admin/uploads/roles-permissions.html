@@ -1,0 +1,944 @@
+<?php
+require_once BASE_PATH . '../../config/database.php';
+// التحقق من صلاحية المدير
+$accessControl = new AccessControl();
+if (!$accessControl->checkPermission('manage_roles')) {
+    header('Location: /pages/admin/staff_login.php?error=unauthorized');
+    exit();
+}
+
+$roleManager = new RoleManager();
+$permissionManager = new PermissionManager();
+$audit = new AuditTrail();
+
+// معالجة الإجراءات
+$message = '';
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+    
+    try {
+        switch ($action) {
+            case 'create_role':
+                $roleId = sanitize_input($_POST['role_id']);
+                $roleName = sanitize_input($_POST['role_name']);
+                $description = sanitize_input($_POST['description']);
+                
+                if ($roleManager->createRole($roleId, $roleName, $description)) {
+                    $audit->logEvent(
+                        AuditTrail::CATEGORY_AUTHORIZATION,
+                        'role_created',
+                        ['role_id' => $roleId, 'role_name' => $roleName]
+                    );
+                    $message = 'تم إنشاء الدور بنجاح';
+                } else {
+                    $error = 'فشل في إنشاء الدور - قد يكون موجوداً بالفعل';
+                }
+                break;
+                
+            case 'update_role':
+                $roleId = sanitize_input($_POST['role_id']);
+                $data = [
+                    'name' => sanitize_input($_POST['role_name']),
+                    'description' => sanitize_input($_POST['description'])
+                ];
+                
+                if ($roleManager->updateRole($roleId, $data)) {
+                    $audit->logEvent(
+                        AuditTrail::CATEGORY_AUTHORIZATION,
+                        'role_updated',
+                        ['role_id' => $roleId, 'changes' => $data]
+                    );
+                    $message = 'تم تحديث الدور بنجاح';
+                }
+                break;
+                
+            case 'delete_role':
+                $roleId = sanitize_input($_POST['role_id']);
+                
+                if ($roleId === 'admin') {
+                    $error = 'لا يمكن حذف دور المدير العام';
+                } elseif ($roleManager->deleteRole($roleId)) {
+                    $audit->logEvent(
+                        AuditTrail::CATEGORY_AUTHORIZATION,
+                        'role_deleted',
+                        ['role_id' => $roleId]
+                    );
+                    $message = 'تم حذف الدور بنجاح';
+                }
+                break;
+                
+            case 'update_permissions':
+                $roleId = sanitize_input($_POST['role_id']);
+                $permissions = $_POST['permissions'] ?? [];
+                
+                // تحديث الصلاحيات
+                $role = $roleManager->getRole($roleId);
+                $currentPermissions = $role['permissions'] ?? [];
+                
+                // إضافة الصلاحيات الجديدة
+                foreach ($permissions as $perm) {
+                    if (!in_array($perm, $currentPermissions)) {
+                        $roleManager->addPermission($roleId, $perm);
+                    }
+                }
+                
+                // إزالة الصلاحيات القديمة
+                foreach ($currentPermissions as $perm) {
+                    if ($perm !== '*' && !in_array($perm, $permissions)) {
+                        $roleManager->removePermission($roleId, $perm);
+                    }
+                }
+                
+                $audit->logEvent(
+                    AuditTrail::CATEGORY_AUTHORIZATION,
+                    'permissions_updated',
+                    ['role_id' => $roleId, 'permissions' => $permissions]
+                );
+                $message = 'تم تحديث الصلاحيات بنجاح';
+                break;
+                
+            case 'assign_role':
+                $userId = (int)$_POST['user_id'];
+                $roleId = sanitize_input($_POST['role_id']);
+                
+                // تحديث دور المستخدم (يجب تخزينه في قاعدة البيانات)
+                $_SESSION['user_role_' . $userId] = $roleId;
+                
+                $audit->logEvent(
+                    AuditTrail::CATEGORY_AUTHORIZATION,
+                    'role_assigned',
+                    ['user_id' => $userId, 'role_id' => $roleId]
+                );
+                $message = 'تم تعيين الدور للمستخدم بنجاح';
+                break;
+        }
+    } catch (Exception $e) {
+        $error = 'حدث خطأ: ' . $e->getMessage();
+    }
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الأدوار والصلاحيات</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .sidebar a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+            transition: all 0.3s;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding-right: 30px;
+        }
+        .sidebar i {
+            margin-left: 10px;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border: none;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: bold;
+        }
+        .role-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+        }
+        .permission-group {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .permission-item {
+            padding: 5px 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .permission-item:last-child {
+            border-bottom: none;
+        }
+        .nav-tabs .nav-link {
+            color: #495057;
+        }
+        .nav-tabs .nav-link.active {
+            color: #764ba2;
+            font-weight: bold;
+            border-bottom: 3px solid #764ba2;
+        }
+        .btn-action {
+            margin: 2px;
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(102, 126, 234, 0.05);
+        }
+        .badge-permission {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            padding: 5px 10px;
+            border-radius: 15px;
+            margin: 2px;
+            display: inline-block;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- الشريط الجانبي -->
+            <div class="col-md-2 p-0 sidebar">
+                <div class="p-3">
+                    <h4 class="text-center mb-4">
+                        <i class="bi bi-shield-lock"></i>
+                        نظام الأمان
+                    </h4>
+                </div>
+                <nav class="mt-3">
+                    <a href="dashboard.php" class="">
+                        <i class="bi bi-speedometer2"></i> لوحة التحكم
+                    </a>
+                    <a href="users.php">
+                        <i class="bi bi-people"></i> المستخدمين
+                    </a>
+                    <a href="roles-permissions.php" class="active">
+                        <i class="bi bi-key"></i> الأدوار والصلاحيات
+                    </a>
+                    <a href="audit-logs.php">
+                        <i class="bi bi-journal-text"></i> سجلات التدقيق
+                    </a>
+                    <a href="security-settings.html">
+                        <i class="bi bi-gear"></i> إعدادات الأمان
+                    </a>
+                    <hr style="border-color: rgba(255,255,255,0.1);">
+                    <a href="../../index.php">
+                        <i class="bi bi-house"></i> الصفحة الرئيسية
+                    </a>
+                    <a href="logout.php">
+                        <i class="bi bi-box-arrow-left"></i> تسجيل خروج
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- المحتوى الرئيسي -->
+            <div class="col-md-10 main-content">
+                <!-- رأس الصفحة -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>
+                        <i class="bi bi-key text-primary"></i>
+                        إدارة الأدوار والصلاحيات
+                    </h2>
+                    <div>
+                        <span class="badge bg-success p-2">
+                            <i class="bi bi-person"></i>
+                            <?php echo $_SESSION['username'] ?? 'مدير'; ?>
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- رسائل النجاح والخطأ -->
+                <?php if ($message): ?>
+                    <div class="alert alert-success alert-dismissible fade show">
+                        <i class="bi bi-check-circle"></i>
+                        <?php echo $message; ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if ($error): ?>
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <?php echo $error; ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- تبويبات التنقل -->
+                <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="roles-tab" data-bs-toggle="tab" data-bs-target="#roles" type="button" role="tab">
+                            <i class="bi bi-shield"></i>
+                            الأدوار
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="permissions-tab" data-bs-toggle="tab" data-bs-target="#permissions" type="button" role="tab">
+                            <i class="bi bi-list-check"></i>
+                            الصلاحيات
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
+                            <i class="bi bi-people"></i>
+                            تعيين الأدوار للمستخدمين
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="matrix-tab" data-bs-toggle="tab" data-bs-target="#matrix" type="button" role="tab">
+                            <i class="bi bi-grid-3x3"></i>
+                            مصفوفة الصلاحيات
+                        </button>
+                    </li>
+                </ul>
+                
+                <!-- محتوى التبويبات -->
+                <div class="tab-content" id="myTabContent">
+                    
+                    <!-- تبويب الأدوار -->
+                    <div class="tab-pane fade show active" id="roles" role="tabpanel">
+                        <div class="row">
+                            <!-- قائمة الأدوار -->
+                            <div class="col-md-5">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <i class="bi bi-shield"></i>
+                                        قائمة الأدوار
+                                        <button class="btn btn-sm btn-light float-start" data-bs-toggle="modal" data-bs-target="#addRoleModal">
+                                            <i class="bi bi-plus"></i> إضافة دور
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>الدور</th>
+                                                        <th>الوصف</th>
+                                                        <th>المستخدمين</th>
+                                                        <th>الإجراءات</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($roles as $id => $role): ?>
+                                                    <tr>
+                                                        <td>
+                                                            <strong><?php echo htmlspecialchars($role['name']); ?></strong>
+                                                            <br>
+                                                            <small class="text-muted"><?php echo $id; ?></small>
+                                                        </td>
+                                                        <td><?php echo htmlspecialchars($role['description']); ?></td>
+                                                        <td>
+                                                            <?php 
+                                                            $count = count(array_filter($users, function($u) use ($id) {
+                                                                return $u['role'] === $id;
+                                                            }));
+                                                            ?>
+                                                            <span class="badge bg-info"><?php echo $count; ?></span>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-primary btn-action" 
+                                                                    onclick="editRole('<?php echo $id; ?>')"
+                                                                    title="تعديل">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </button>
+                                                            <?php if ($id !== 'admin'): ?>
+                                                            <button class="btn btn-sm btn-danger btn-action" 
+                                                                    onclick="deleteRole('<?php echo $id; ?>')"
+                                                                    title="حذف">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                            <?php endif; ?>
+                                                            <button class="btn btn-sm btn-success btn-action" 
+                                                                    onclick="managePermissions('<?php echo $id; ?>')"
+                                                                    title="إدارة الصلاحيات">
+                                                                <i class="bi bi-key"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- صلاحيات الدور المحدد -->
+                            <div class="col-md-7" id="permissionsPanel">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <i class="bi bi-list-check"></i>
+                                        صلاحيات الدور
+                                    </div>
+                                    <div class="card-body">
+                                        <?php foreach ($roles as $id => $role): ?>
+                                        <div class="role-permissions mb-4" id="perms-<?php echo $id; ?>" style="display: none;">
+                                            <h5>
+                                                <?php echo htmlspecialchars($role['name']); ?>
+                                                <small class="text-muted">(<?php echo $id; ?>)</small>
+                                            </h5>
+                                            
+                                            <?php if (in_array('*', $role['permissions'])): ?>
+                                                <div class="alert alert-info">
+                                                    <i class="bi bi-star-fill text-warning"></i>
+                                                    هذا الدور لديه جميع الصلاحيات (Super Admin)
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="row">
+                                                    <?php 
+                                                    $grouped = [];
+                                                    foreach ($role['permissions'] as $perm) {
+                                                        $group = explode('_', $perm)[0] ?? 'other';
+                                                        $grouped[$group][] = $perm;
+                                                    }
+                                                    ?>
+                                                    
+                                                    <?php foreach ($grouped as $group => $perms): ?>
+                                                    <div class="col-md-6">
+                                                        <div class="permission-group">
+                                                            <h6 class="text-primary">
+                                                                <?php 
+                                                                $groupNames = [
+                                                                    'view' => 'عرض',
+                                                                    'manage' => 'إدارة',
+                                                                    'create' => 'إنشاء',
+                                                                    'edit' => 'تعديل',
+                                                                    'delete' => 'حذف',
+                                                                    'upload' => 'رفع',
+                                                                    'download' => 'تحميل',
+                                                                    'approve' => 'موافقة',
+                                                                    'process' => 'معالجة',
+                                                                    'run' => 'تشغيل',
+                                                                    'apply' => 'تطبيق',
+                                                                    'analyze' => 'تحليل',
+                                                                    'other' => 'أخرى'
+                                                                ];
+                                                                echo $groupNames[$group] ?? $group;
+                                                                ?>
+                                                            </h6>
+                                                            <?php foreach ($perms as $perm): ?>
+                                                            <div class="permission-item">
+                                                                <i class="bi bi-check-circle-fill text-success small"></i>
+                                                                <?php 
+                                                                $permName = $allPermissions[$perm] ?? $perm;
+                                                                echo htmlspecialchars($permName);
+                                                                ?>
+                                                            </div>
+                                                            <?php endforeach; ?>
+                                                        </div>
+                                                    </div>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                        <?php endforeach; ?>
+                                        
+                                        <div class="text-center text-muted" id="noRoleSelected">
+                                            <i class="bi bi-arrow-right-circle" style="font-size: 3rem;"></i>
+                                            <p>اختر دوراً من القائمة لعرض صلاحياته</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- تبويب الصلاحيات -->
+                    <div class="tab-pane fade" id="permissions" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-list-check"></i>
+                                جميع الصلاحيات المتاحة
+                                <button class="btn btn-sm btn-light float-start" data-bs-toggle="modal" data-bs-target="#addPermissionModal">
+                                    <i class="bi bi-plus"></i> إضافة صلاحية
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <?php 
+                                    $groupedPermissions = [];
+                                    foreach ($allPermissions as $id => $desc) {
+                                        $group = explode('_', $id)[0] ?? 'other';
+                                        $groupedPermissions[$group][$id] = $desc;
+                                    }
+                                    
+                                    ksort($groupedPermissions);
+                                    ?>
+                                    
+                                    <?php foreach ($groupedPermissions as $group => $perms): ?>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="permission-group">
+                                            <h5 class="text-primary border-bottom pb-2">
+                                                <?php 
+                                                $groupNames = [
+                                                    'view' => 'عرض',
+                                                    'manage' => 'إدارة',
+                                                    'create' => 'إنشاء',
+                                                    'edit' => 'تعديل',
+                                                    'delete' => 'حذف',
+                                                    'upload' => 'رفع',
+                                                    'download' => 'تحميل',
+                                                    'approve' => 'موافقة',
+                                                    'process' => 'معالجة',
+                                                    'run' => 'تشغيل',
+                                                    'apply' => 'تطبيق',
+                                                    'analyze' => 'تحليل',
+                                                    'access' => 'وصول',
+                                                    'export' => 'تصدير',
+                                                    'import' => 'استيراد',
+                                                    'assign' => 'تعيين',
+                                                    'track' => 'تتبع',
+                                                    'coordinate' => 'تنسيق',
+                                                    'send' => 'إرسال',
+                                                    'other' => 'أخرى'
+                                                ];
+                                                echo $groupNames[$group] ?? ucfirst($group);
+                                                ?>
+                                            </h5>
+                                            <?php foreach ($perms as $id => $desc): ?>
+                                            <div class="permission-item d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <span class="badge-permission">
+                                                        <?php echo htmlspecialchars($desc); ?>
+                                                    </span>
+                                                    <br>
+                                                    <small class="text-muted"><?php echo $id; ?></small>
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-sm btn-outline-primary" 
+                                                            onclick="copyPermissionId('<?php echo $id; ?>')"
+                                                            title="نسخ المعرف">
+                                                        <i class="bi bi-files"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- تبويب تعيين الأدوار -->
+                    <div class="tab-pane fade" id="users" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-people"></i>
+                                تعيين الأدوار للمستخدمين
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>اسم المستخدم</th>
+                                                <th>اسم العرض</th>
+                                                <th>الدور الحالي</th>
+                                                <th>تغيير الدور</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($users as $id => $user): ?>
+                                            <tr>
+                                                <td><?php echo $id; ?></td>
+                                                <td><?php echo htmlspecialchars($user['username']); ?></td>
+                                                <td><?php echo htmlspecialchars($user['name']); ?></td>
+                                                <td>
+                                                    <?php 
+                                                    $roleName = $roles[$user['role']]['name'] ?? $user['role'];
+                                                    ?>
+                                                    <span class="badge bg-primary"><?php echo $roleName; ?></span>
+                                                </td>
+                                                <td>
+                                                    <form method="POST" class="d-flex align-items-center" style="gap: 10px;">
+                                                        <input type="hidden" name="action" value="assign_role">
+                                                        <input type="hidden" name="user_id" value="<?php echo $id; ?>">
+                                                        <select name="role_id" class="form-select form-select-sm" style="width: auto;">
+                                                            <?php foreach ($roles as $rid => $role): ?>
+                                                            <option value="<?php echo $rid; ?>" <?php echo $user['role'] === $rid ? 'selected' : ''; ?>>
+                                                                <?php echo htmlspecialchars($role['name']); ?>
+                                                            </option>
+                                                            <?php endforeach; ?>
+                                                        </select>
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            <i class="bi bi-check"></i> حفظ
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- تبويب مصفوفة الصلاحيات -->
+                    <div class="tab-pane fade" id="matrix" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-grid-3x3"></i>
+                                مصفوفة الصلاحيات
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th style="min-width: 200px;">الصلاحية</th>
+                                                <?php foreach ($roles as $id => $role): ?>
+                                                <th class="text-center">
+                                                    <?php echo htmlspecialchars($role['name']); ?>
+                                                </th>
+                                                <?php endforeach; ?>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($allPermissions as $permId => $permDesc): ?>
+                                            <tr>
+                                                <td>
+                                                    <?php echo htmlspecialchars($permDesc); ?>
+                                                    <br>
+                                                    <small class="text-muted"><?php echo $permId; ?></small>
+                                                </td>
+                                                <?php foreach ($roles as $id => $role): ?>
+                                                <td class="text-center">
+                                                    <?php if (in_array('*', $role['permissions']) || in_array($permId, $role['permissions'])): ?>
+                                                        <i class="bi bi-check-circle-fill text-success" style="font-size: 1.2rem;"></i>
+                                                    <?php else: ?>
+                                                        <i class="bi bi-x-circle-fill text-danger" style="font-size: 1.2rem;"></i>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <?php endforeach; ?>
+                                            </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- مودال إضافة دور -->
+    <div class="modal fade" id="addRoleModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">إضافة دور جديد</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" name="action" value="create_role">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">معرف الدور (英文)</label>
+                            <input type="text" name="role_id" class="form-control" required 
+                                   placeholder="manager, editor, viewer..."
+                                   pattern="[a-z_]+" title="حروف صغيرة وشرطة سفلية فقط">
+                            <small class="text-muted">مثال: content_manager, support_staff</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">اسم الدور (عربي)</label>
+                            <input type="text" name="role_name" class="form-control" required 
+                                   placeholder="مدير محتوى، موظف دعم...">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">الوصف</label>
+                            <textarea name="description" class="form-control" rows="3" 
+                                      placeholder="وصف مختصر لمهام هذا الدور"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">إنشاء الدور</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- مودال تعديل دور -->
+    <div class="modal fade" id="editRoleModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">تعديل دور</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" name="action" value="update_role">
+                        <input type="hidden" name="role_id" id="edit_role_id">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">اسم الدور</label>
+                            <input type="text" name="role_name" id="edit_role_name" class="form-control" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">الوصف</label>
+                            <textarea name="description" id="edit_description" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-warning">تحديث</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- مودال إدارة الصلاحيات -->
+    <div class="modal fade" id="permissionsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">إدارة صلاحيات الدور</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" name="action" value="update_permissions">
+                        <input type="hidden" name="role_id" id="perm_role_id">
+                        
+                        <h5 id="perm_role_name" class="mb-3"></h5>
+                        
+                        <div class="row">
+                            <?php 
+                            $groupedForModal = [];
+                            foreach ($allPermissions as $id => $desc) {
+                                $group = explode('_', $id)[0] ?? 'other';
+                                $groupedForModal[$group][$id] = $desc;
+                            }
+                            ksort($groupedForModal);
+                            ?>
+                            
+                            <?php foreach ($groupedForModal as $group => $perms): ?>
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-header bg-light">
+                                        <strong>
+                                            <?php echo $groupNames[$group] ?? ucfirst($group); ?>
+                                        </strong>
+                                    </div>
+                                    <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                                        <?php foreach ($perms as $id => $desc): ?>
+                                        <div class="form-check">
+                                            <input class="form-check-input permission-check" 
+                                                   type="checkbox" 
+                                                   name="permissions[]" 
+                                                   value="<?php echo $id; ?>" 
+                                                   id="perm_<?php echo $id; ?>">
+                                            <label class="form-check-label" for="perm_<?php echo $id; ?>">
+                                                <?php echo htmlspecialchars($desc); ?>
+                                                <br>
+                                                <small class="text-muted"><?php echo $id; ?></small>
+                                            </label>
+                                        </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-sm btn-info" onclick="selectAllPermissions()">
+                                <i class="bi bi-check-all"></i> تحديد الكل
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="deselectAllPermissions()">
+                                <i class="bi bi-x"></i> إلغاء الكل
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-success">حفظ الصلاحيات</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // عرض صلاحيات الدور عند النقر
+        function showRolePermissions(roleId) {
+            document.querySelectorAll('.role-permissions').forEach(el => el.style.display = 'none');
+            document.getElementById('perms-' + roleId).style.display = 'block';
+            document.getElementById('noRoleSelected').style.display = 'none';
+        }
+        
+        // ربط النقر على صفوف الجدول
+        document.querySelectorAll('#roles tbody tr').forEach((row, index) => {
+            row.addEventListener('click', function(e) {
+                if (!e.target.closest('.btn-action')) {
+                    const roleId = this.cells[0].innerText.split('\n')[1]?.trim() || 
+                                   this.querySelector('small')?.innerText;
+                    if (roleId) {
+                        showRolePermissions(roleId);
+                    }
+                }
+            });
+        });
+        
+        // تعديل دور
+        function editRole(roleId) {
+            // الحصول على بيانات الدور من الجدول
+            const row = event.target.closest('tr');
+            const roleName = row.cells[0].querySelector('strong').innerText;
+            const description = row.cells[1].innerText;
+            
+            document.getElementById('edit_role_id').value = roleId;
+            document.getElementById('edit_role_name').value = roleName;
+            document.getElementById('edit_description').value = description;
+            
+            new bootstrap.Modal(document.getElementById('editRoleModal')).show();
+        }
+        
+        // حذف دور
+        function deleteRole(roleId) {
+            if (confirm('هل أنت متأكد من حذف هذا الدور؟')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.innerHTML = `
+                    <input type="hidden" name="action" value="delete_role">
+                    <input type="hidden" name="role_id" value="${roleId}">
+                `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+        
+        // إدارة صلاحيات دور
+        function managePermissions(roleId) {
+            document.getElementById('perm_role_id').value = roleId;
+            
+            // الحصول على اسم الدور
+            const rows = document.querySelectorAll('#roles tbody tr');
+            for (let row of rows) {
+                const small = row.querySelector('small');
+                if (small && small.innerText === roleId) {
+                    const roleName = row.querySelector('strong').innerText;
+                    document.getElementById('perm_role_name').innerText = roleName;
+                    break;
+                }
+            }
+            
+            // إلغاء تحديد جميع الصلاحيات أولاً
+            document.querySelectorAll('.permission-check').forEach(cb => cb.checked = false);
+            
+            // تفعيل صلاحيات الدور الحالي (سيتم تحميلها من الخادم)
+            // هذا يحتاج إلى AJAX للحصول على صلاحيات الدور
+            
+            new bootstrap.Modal(document.getElementById('permissionsModal')).show();
+        }
+        
+        // تحديد جميع الصلاحيات
+        function selectAllPermissions() {
+            document.querySelectorAll('.permission-check').forEach(cb => cb.checked = true);
+        }
+        
+        // إلغاء تحديد جميع الصلاحيات
+        function deselectAllPermissions() {
+            document.querySelectorAll('.permission-check').forEach(cb => cb.checked = false);
+        }
+        
+        // نسخ معرف الصلاحية
+        function copyPermissionId(permId) {
+            navigator.clipboard.writeText(permId).then(() => {
+                alert('تم نسخ المعرف: ' + permId);
+            });
+        }
+        
+        // تفعيل التلميحات
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    </script>
+    <!-- مودال إضافة صلاحية -->
+<div class="modal fade" id="addPermissionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">إضافة صلاحية جديدة</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="permissions.php">
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="add_permission">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">معرف الصلاحية (英文)</label>
+                        <input type="text" name="permission_id" class="form-control" required 
+                               placeholder="manage_reports, view_analytics..."
+                               pattern="[a-z_]+" title="حروف صغيرة وشرطة سفلية فقط">
+                        <small class="text-muted">مثال: view_reports, manage_users</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">وصف الصلاحية (عربي)</label>
+                        <input type="text" name="permission_desc" class="form-control" required 
+                               placeholder="عرض التقارير، إدارة المستخدمين...">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">المجموعة</label>
+                        <select name="permission_group" class="form-select">
+                            <option value="view">عرض</option>
+                            <option value="manage">إدارة</option>
+                            <option value="create">إنشاء</option>
+                            <option value="edit">تعديل</option>
+                            <option value="delete">حذف</option>
+                            <option value="upload">رفع</option>
+                            <option value="download">تحميل</option>
+                            <option value="approve">موافقة</option>
+                            <option value="process">معالجة</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-info">إضافة الصلاحية</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

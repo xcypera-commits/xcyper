@@ -1,0 +1,115 @@
+📁 backup/encryption_keys/
+├── 📁 daily/
+│   ├── 2024-01-15/
+│   │   ├── keys.tar.gz.gpg
+│   │   ├── checksum.sha512
+│   │   ├── verification.json
+│   │   └── metadata.txt
+│   │
+│   ├── 2024-01-14/
+│   │   └── ...
+│   │
+│   └── 2024-01-13/
+│       └── ...
+│
+├── 📁 weekly/
+│   ├── week_02_2024/
+│   │   ├── keys_full_backup.tar.gz.gpg
+│   │   ├── checksum.sha512
+│   │   └── key_inventory.json
+│   │
+│   └── week_01_2024/
+│       └── ...
+│
+├── 📁 offline/
+│   ├── usb_drive_001/
+│   │   ├── master_keys.gpg
+│   │   └── recovery_codes.txt.gpg
+│   │
+│   ├── usb_drive_002/
+│   │   └── ...
+│   │
+│   └── paper_wallet/
+│       ├── key_001.txt
+│       ├── key_002.txt
+│       └── ...
+│
+└── 📁 recovery/
+    ├── emergency_access.gpg
+    ├── key_shards/
+    │   ├── shard_001_of_005.gpg
+    │   ├── shard_002_of_005.gpg
+    │   ├── shard_003_of_005.gpg
+    │   ├── shard_004_of_005.gpg
+    │   └── shard_005_of_005.gpg
+    │
+    └── instructions.txt
+
+
+
+    #!/bin/bash
+# backup/encryption_keys/backup_keys.sh
+
+KEYS_DIR="/etc/hosting/keys"
+BACKUP_DIR="/var/backup/encryption_keys/daily/$(date +%Y-%m-%d)"
+GPG_RECIPIENTS=("security@hostingsystem.com" "backup@hostingsystem.com")
+
+# إنشاء مجلد النسخ الاحتياطي
+mkdir -p "$BACKUP_DIR"
+
+# نسخ المفاتيح مع استثناءات
+rsync -av --exclude='*.tmp' --exclude='*.swp' "$KEYS_DIR/" "$BACKUP_DIR/raw/"
+
+# إنشاء قائمة جرد للمفاتيح
+echo "Key Inventory - $(date)" > "$BACKUP_DIR/key_inventory.txt"
+echo "========================" >> "$BACKUP_DIR/key_inventory.txt"
+find "$KEYS_DIR" -type f -name "*.pem" -o -name "*.key" -o -name "*.pub" | while read key; do
+    echo "File: $key" >> "$BACKUP_DIR/key_inventory.txt"
+    echo "Size: $(stat -c%s "$key") bytes" >> "$BACKUP_DIR/key_inventory.txt"
+    echo "Permissions: $(stat -c%a "$key")" >> "$BACKUP_DIR/key_inventory.txt"
+    echo "Checksum: $(sha256sum "$key" | cut -d' ' -f1)" >> "$BACKUP_DIR/key_inventory.txt"
+    echo "---" >> "$BACKUP_DIR/key_inventory.txt"
+done
+
+# ضغط المفاتيح
+tar -czf "$BACKUP_DIR/keys_$(date +%Y%m%d).tar.gz" -C "$BACKUP_DIR/raw" .
+
+# تشفير باستخدام GPG مع متلقين متعددين
+for recipient in "${GPG_RECIPIENTS[@]}"; do
+    gpg --encrypt \
+        --recipient "$recipient" \
+        --trust-model always \
+        --output "$BACKUP_DIR/keys_$(date +%Y%m%d).tar.gz.gpg" \
+        "$BACKUP_DIR/keys_$(date +%Y%m%d).tar.gz"
+done
+
+# إنشاء shards للاستعادة الطارئة
+split -b 1M "$BACKUP_DIR/keys_$(date +%Y%m%d).tar.gz.gpg" "$BACKUP_DIR/shards/key_shard_"
+COUNT=1
+for shard in "$BACKUP_DIR/shards/key_shard_"*; do
+    mv "$shard" "$BACKUP_DIR/shards/shard_$(printf "%03d" $COUNT)_of_005.gpg"
+    ((COUNT++))
+done
+
+# حذف الملفات غير المشفرة
+shred -u "$BACKUP_DIR/raw/"*
+rm -rf "$BACKUP_DIR/raw"
+shred -u "$BACKUP_DIR/keys_$(date +%Y%m%d).tar.gz"
+
+# نسخ للوسائط الخارجية (إذا متصلة)
+if [ -d "/media/backup_drive" ]; then
+    cp "$BACKUP_DIR/keys_$(date +%Y%m%d).tar.gz.gpg" "/media/backup_drive/"
+    echo "Copied to external drive" >> "$BACKUP_DIR/backup_log.txt"
+fi
+
+# تسجيل النسخ الاحتياطي
+echo "{
+  \"backup_id\": \"key_backup_$(date +%Y%m%d_%H%M%S)\",
+  \"timestamp\": \"$(date -Iseconds)\",
+  \"key_count\": \"$(find $KEYS_DIR -type f -name \"*.pem\" -o -name \"*.key\" | wc -l)\",
+  \"total_size\": \"$(du -sh $BACKUP_DIR | cut -f1)\",
+  \"encryption\": \"GPG (AES-256)\",
+  \"recipients\": [\"${GPG_RECIPIENTS[@]}\"],
+  \"shards_created\": 5,
+  \"external_backup\": \"$(if [ -d \"/media/backup_drive\" ]; then echo 'yes'; else echo 'no'; fi)\"
+}" > "$BACKUP_DIR/backup_metadata.json"
